@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Food = require("../app/models/food.model");
 const Category = require("../app/models/category.model");
+require("dotenv").config();
 
-const dbURI = "mongodb://localhost:27017/swiggi";
+const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
 
 const categoryDefinitions = [
   { name: "Gà Rán", slug: "ga-ran", aliases: ["gà rán", "ga ran"] },

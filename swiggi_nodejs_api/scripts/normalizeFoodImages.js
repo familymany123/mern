@@ -2,8 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const Food = require("../app/models/food.model");
+require("dotenv").config();
 
-const dbURI = "mongodb://localhost:27017/swiggi";
+const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
 const uploadsDir = path.join(__dirname, "..", "uploads");
 
 async function main() {

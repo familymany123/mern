@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Category = require("../app/models/category.model");
+require("dotenv").config();
 
-const dbURI = "mongodb://localhost:27017/swiggi";
+const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
 const baseApi = process.env.BASE_API || "http://127.0.0.1:3001";
 
 const slugs = [
