@@ -1,0 +1,28 @@
+.table td, .table th {
+  vertical-align: middle;
+}
+
+.current-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.stat {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  width: 200px;
+}
+
+.stat h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.stat p {
+  font-size: 1.2em;
+  margin: 5px 0;
+}

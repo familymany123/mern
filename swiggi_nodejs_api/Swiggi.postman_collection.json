@@ -1,0 +1,2434 @@
+{
+	"info": {
+		"_postman_id": "eddb0289-c389-44a8-a8b1-7f17846531c8",
+		"name": "Swiggi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16705353",
+		"_collection_link": "https://lunar-crater-25664.postman.co/workspace/Nodejs_Tour~c4474b59-b080-436d-b6ba-6f4bce5ad43e/collection/16705353-eddb0289-c389-44a8-a8b1-7f17846531c8?action=share&source=collection_link&creator=16705353"
+	},
+	"item": [
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/categories/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/categories/66bce3edc2b366176f8f7d64",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"categories",
+								"66bce3edc2b366176f8f7d64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Chuyen muc moi",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "chuyen-muc-moi",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/fx 580.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/categories",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Danh Mục Mới",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "danh-muc-moi",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/fx 580.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/categories/66bce3edc2b366176f8f7d64",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"categories",
+								"66bce3edc2b366176f8f7d64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/categories/66bcda9ea308e0eb00493beb",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"categories",
+								"66bcda9ea308e0eb00493beb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListFoodByCategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/categories/66bce3edc2b366176f8f7d64/foods",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"categories",
+								"66bce3edc2b366176f8f7d64",
+								"foods"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Foods",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/foods/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/foods/66bdb2c78b3016f077576664",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								"66bdb2c78b3016f077576664"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU2Mzg4ODEsImV4cCI6MTcyNTY0MjQ4MX0.R0uI4TkKIks068ekigytVPNoEn5KZ3VQdAmpucYTqBE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "pizza1234567",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "150000",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Món pizza123456",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Admin/Pictures/z4617362817818_39cacdb57658e537cb0e22dc18e885d8.jpg"
+								},
+								{
+									"key": "slug",
+									"value": "mon-pizza",
+									"type": "text"
+								},
+								{
+									"key": "cooking_time",
+									"value": "15 minutes",
+									"type": "text"
+								},
+								{
+									"key": "show",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "Vegetarian",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "66bce3edc2b366176f8f7d64",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/foods",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJpYXQiOjE3MjM4MDEzOTIsImV4cCI6MTcyMzgwNDk5Mn0.xU5Zgh3qJIR11emptzvqEvS4dBZJp0O4hNPLfx1phuI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "pizza 1111",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "150000",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Món pizza",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/MVC step.png"
+								},
+								{
+									"key": "slug",
+									"value": "mon-pizza",
+									"type": "text"
+								},
+								{
+									"key": "cooking_time",
+									"value": "15 minutes",
+									"type": "text"
+								},
+								{
+									"key": "show",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "Vegetarian",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "66bce3edc2b366176f8f7d64",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/foods/66bdb319456006bf4277aa03",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								"66bdb319456006bf4277aa03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/foods/66bdb319456006bf4277aa03",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								"66bdb319456006bf4277aa03"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Toppings",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/toppings",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"toppings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/toppings/66bce3edc2b366176f8f7d64",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"toppings",
+								"66bce3edc2b366176f8f7d64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Topping Mới 2",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "30000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/toppings",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"toppings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Topping Mới",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "150000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/toppings/66bdb5da381dfae3e9713861",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"toppings",
+								"66bdb5da381dfae3e9713861"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/toppings/66bdb628381dfae3e9713868",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"toppings",
+								"66bdb628381dfae3e9713868"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FoodTopping",
+			"item": [
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/foods/topping/66bdb2c78b3016f077576664",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								"topping",
+								"66bdb2c78b3016f077576664"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "food",
+									"value": "66bdb2c78b3016f077576664",
+									"type": "text"
+								},
+								{
+									"key": "topping",
+									"value": "66bdb5da381dfae3e9713861",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/foods/topping",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								"topping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/foods/topping/66bdbc9b32a6b74931026d47",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"foods",
+								"topping",
+								"66bdbc9b32a6b74931026d47"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coupons",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/coupons",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"coupons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/coupons/66bdd82eb61342bfb309ed6e",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"coupons",
+								"66bdd82eb61342bfb309ed6e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "code",
+									"value": "GIAMGIA25",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Mã giảm giá 25% cho các đơn hàng",
+									"type": "text"
+								},
+								{
+									"key": "value",
+									"value": "25",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "expiry_date",
+									"value": "2024-08-16",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/coupons",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"coupons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "code",
+									"value": "GIAMGIA26",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Mã giảm giá 26% cho các đơn hàng",
+									"type": "text"
+								},
+								{
+									"key": "value",
+									"value": "26",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "expiry_date",
+									"value": "2024-08-16",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/coupons/66bdd82eb61342bfb309ed6e",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"coupons",
+								"66bdd82eb61342bfb309ed6e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/coupons/66bdd82eb61342bfb309ed6e",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"coupons",
+								"66bdd82eb61342bfb309ed6e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjYzOTMxODEsImV4cCI6MTcyNjM5Njc4MX0.6RC1XC9MjOj10K7RGTZ4WX1eYqjtzA0KQdeoatkeKBM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/users",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/users/66bde2ace276f09dfc8ca683",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"users",
+								"66bde2ace276f09dfc8ca683"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJpYXQiOjE3MjM4MDEzOTIsImV4cCI6MTcyMzgwNDk5Mn0.xU5Zgh3qJIR11emptzvqEvS4dBZJp0O4hNPLfx1phuI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/users/profile",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzNDdmYmM1M2UyZDI0MzlmYjg4NjEiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MjkzMzk5NDQsImV4cCI6MTcyOTM0MzU0NH0.M8TptzBwc4rgZYdm_oEhQTEWJyMe93z0XaNDOLE6bvY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullname",
+									"value": "Nguyễn Văn An",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Hà Nội",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "0555666779",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "nguyenvanabc@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/users",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/users/:id/block",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"users",
+								":id",
+								"block"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "66bde2ace276f09dfc8ca683"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Configs",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/configs/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"configs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/configs/66d965927ebb0caba6a54bfd",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"configs",
+								"66d965927ebb0caba6a54bfd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MjMzMDMsImV4cCI6MTcyNTUyNjkwM30.-UJSKNPioVhJrfCpQn7h1CSTjYyx3ZlaMlFlQeYZVOs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Web bán món ăn 1",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Đường abc",
+									"type": "text"
+								},
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/download.png"
+								},
+								{
+									"key": "favicon",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/download.png"
+								},
+								{
+									"key": "facebook",
+									"value": "f",
+									"type": "text"
+								},
+								{
+									"key": "youtube",
+									"value": "y",
+									"type": "text"
+								},
+								{
+									"key": "x",
+									"value": "x",
+									"type": "text"
+								},
+								{
+									"key": "instagram",
+									"value": "i",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/configs/66d965927ebb0caba6a54bfd",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"configs",
+								"66d965927ebb0caba6a54bfd"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Banners",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/banners/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"banners",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/banners/66d9698d899947532598a148",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"banners",
+								"66d9698d899947532598a148"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MjMzMDMsImV4cCI6MTcyNTUyNjkwM30.-UJSKNPioVhJrfCpQn7h1CSTjYyx3ZlaMlFlQeYZVOs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/download.png"
+								},
+								{
+									"key": "category",
+									"value": "66bce3edc2b366176f8f7d64",
+									"type": "text"
+								},
+								{
+									"key": "show",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/banners",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"banners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MjMzMDMsImV4cCI6MTcyNTUyNjkwM30.-UJSKNPioVhJrfCpQn7h1CSTjYyx3ZlaMlFlQeYZVOs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Admin/Desktop/MVC step.png"
+								},
+								{
+									"key": "category",
+									"value": "66bce3edc2b366176f8f7d64",
+									"type": "text"
+								},
+								{
+									"key": "show",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/banners/66d9698d899947532598a148",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"banners",
+								"66d9698d899947532598a148"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MjMzMDMsImV4cCI6MTcyNTUyNjkwM30.-UJSKNPioVhJrfCpQn7h1CSTjYyx3ZlaMlFlQeYZVOs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/banners/66d96b3a0403a8f31ddbff33",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"banners",
+								"66d96b3a0403a8f31ddbff33"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MjMzMDMsImV4cCI6MTcyNTUyNjkwM30.-UJSKNPioVhJrfCpQn7h1CSTjYyx3ZlaMlFlQeYZVOs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/contacts/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"contacts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MjYyMDcsImV4cCI6MTcyNTUyOTgwN30.53PI7xbX02ck4PtD5sCkXGZRmL2IvBzU0A30QfIVgKQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/contacts/66d97041008e7a71864358f8",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"contacts",
+								"66d97041008e7a71864358f8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJmMGUyNzZmMDlkZmM4Y2E2OGUiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MjU1MjU5MjEsImV4cCI6MTcyNTUyOTUyMX0.uGhuqh0aJbq0VpVdeK34dmDDV-AWRxF9gofAv6jwOjU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "message",
+									"value": "New contact 1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/contacts/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"contacts",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provinces",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/provinces/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"provinces",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/provinces/66d99bf06abb77ccc9397866",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"provinces",
+								"66d99bf06abb77ccc9397866"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MzcyNDYsImV4cCI6MTcyNTU0MDg0Nn0.sAvc6Y0IIKdWyUuvSDLI5sbnDJ7OyOZusbwARQeMeP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Hà Nội",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/provinces",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"provinces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MzcyNDYsImV4cCI6MTcyNTU0MDg0Nn0.sAvc6Y0IIKdWyUuvSDLI5sbnDJ7OyOZusbwARQeMeP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Hà Nội 2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/provinces/66d99bf06abb77ccc9397866",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"provinces",
+								"66d99bf06abb77ccc9397866"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MzcyNDYsImV4cCI6MTcyNTU0MDg0Nn0.sAvc6Y0IIKdWyUuvSDLI5sbnDJ7OyOZusbwARQeMeP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/provinces/66d99bf06abb77ccc9397866",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"provinces",
+								"66d99bf06abb77ccc9397866"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Districts",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/districts/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"districts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/districts/66d99e9bcf5f3350cf7b2437",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"districts",
+								"66d99e9bcf5f3350cf7b2437"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MzcyNDYsImV4cCI6MTcyNTU0MDg0Nn0.sAvc6Y0IIKdWyUuvSDLI5sbnDJ7OyOZusbwARQeMeP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Hoàn Kiếm",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "66d99c356abb77ccc939786e",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/districts",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"districts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MzcyNDYsImV4cCI6MTcyNTU0MDg0Nn0.sAvc6Y0IIKdWyUuvSDLI5sbnDJ7OyOZusbwARQeMeP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Ba Đình",
+									"type": "text"
+								},
+								{
+									"key": "province",
+									"value": "66d99c356abb77ccc939786e",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/districts/66d99ef6cf5f3350cf7b2445",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"districts",
+								"66d99ef6cf5f3350cf7b2445"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1MzcyNDYsImV4cCI6MTcyNTU0MDg0Nn0.sAvc6Y0IIKdWyUuvSDLI5sbnDJ7OyOZusbwARQeMeP0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/districts/66d99e9bcf5f3350cf7b2437",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"districts",
+								"66d99e9bcf5f3350cf7b2437"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzNDdmYmM1M2UyZDI0MzlmYjg4NjEiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MzAxMjY5ODQsImV4cCI6MTczMDEzMDU4NH0.0VpcNb83YLYtFGR1ly6aLCmcq_mI2KVmdGznMoRs3k8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/carts/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"carts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzNDdmYmM1M2UyZDI0MzlmYjg4NjEiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MzAxMjY5ODQsImV4cCI6MTczMDEzMDU4NH0.0VpcNb83YLYtFGR1ly6aLCmcq_mI2KVmdGznMoRs3k8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "food",
+									"value": "66c7187ac72e581dc371c717",
+									"type": "text"
+								},
+								{
+									"key": "toppings[]",
+									"value": "66bdb5da381dfae3e9713861",
+									"type": "text"
+								},
+								{
+									"key": "toppings[]",
+									"value": "66c70c93c72e581dc371c5ee",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/carts/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"carts",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJmMGUyNzZmMDlkZmM4Y2E2OGUiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MjU2MDk2ODYsImV4cCI6MTcyNTYxMzI4Nn0.JieqCOWA66dz_SK_ZlGfsw6otWO3k06YQm984yitxt0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "quantity",
+									"value": "11",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/carts/66dab8f70bcee729dce0fcf9",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"carts",
+								"66dab8f70bcee729dce0fcf9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJmMGUyNzZmMDlkZmM4Y2E2OGUiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MjU2MDk2ODYsImV4cCI6MTcyNTYxMzI4Nn0.JieqCOWA66dz_SK_ZlGfsw6otWO3k06YQm984yitxt0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/carts/66dabb2d78ea9f9adc530d97",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"carts",
+								"66dabb2d78ea9f9adc530d97"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzNDdmYmM1M2UyZDI0MzlmYjg4NjEiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MzAxMjY5ODQsImV4cCI6MTczMDEzMDU4NH0.0VpcNb83YLYtFGR1ly6aLCmcq_mI2KVmdGznMoRs3k8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/orders/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"orders",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzNDdmYmM1M2UyZDI0MzlmYjg4NjEiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MjYzOTMzNzksImV4cCI6MTcyNjM5Njk3OX0.I75hBW24T1vHj_kZSAZN6LpeckQ63sMWB178D9_G0rc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:3001/orders/:id",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "66e6a6119f0521e59383fd69"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzNDdmYmM1M2UyZDI0MzlmYjg4NjEiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MzAxMjY5ODQsImV4cCI6MTczMDEzMDU4NH0.0VpcNb83YLYtFGR1ly6aLCmcq_mI2KVmdGznMoRs3k8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "address",
+									"value": "ABCDE",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "0379962045",
+									"type": "text"
+								},
+								{
+									"key": "coupon",
+									"value": "GIAMGIA50",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/orders/",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"orders",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjYzOTIwNzIsImV4cCI6MTcyNjM5NTY3Mn0.b-egJHEk2yGRlRbr9DUIN1tL1mnIUwot6J2Rd10Los8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "status",
+									"value": "Processing",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/orders/:id/status",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"orders",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "66e6a6119f0521e59383fd69"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjYzOTMyNDcsImV4cCI6MTcyNjM5Njg0N30.PCH0cwr_XUJVeB-MPKYzeLFjIUjmeFj1irnsp2XUeB0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/orders/:id/cancel",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"orders",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "66e6a6119f0521e59383fd69"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistic",
+			"item": [
+				{
+					"name": "MonthlyRevenue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzAxMzAwMzIsImV4cCI6MTczMDEzMzYzMn0.YyaXYtQn1yS34zVmkeUemum3PpgfXC75XFHTwNH2k3w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/statistics/monthly_revenue",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"statistics",
+								"monthly_revenue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MonthlyOrderCount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzAxMzAwMzIsImV4cCI6MTczMDEzMzYzMn0.YyaXYtQn1yS34zVmkeUemum3PpgfXC75XFHTwNH2k3w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/statistics/monthly_order_count",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"statistics",
+								"monthly_order_count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CurrentRevenue",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzAxMzAwMzIsImV4cCI6MTczMDEzMzYzMn0.YyaXYtQn1yS34zVmkeUemum3PpgfXC75XFHTwNH2k3w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/statistics/current_revenue",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"statistics",
+								"current_revenue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CurrentOrderCount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzAxMzAwMzIsImV4cCI6MTczMDEzMzYzMn0.YyaXYtQn1yS34zVmkeUemum3PpgfXC75XFHTwNH2k3w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "127.0.0.1:3001/statistics/current_order_count",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"statistics",
+								"current_order_count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "nguyenvana",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "nguyenvana",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/login",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullname",
+									"value": "Nguyễn Văn B",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Hà Nội",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "0555666777",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "nguyenvanb@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "nguyenvanb",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "nguyenvanb",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/register",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RefreshToken",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "refreshToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmJkZTJhY2UyNzZmMDlkZmM4Y2E2ODMiLCJpYXQiOjE3MjQwNTUyNzUsImV4cCI6MTcyNDA1NTMzNX0.fATwWZznYLGkz1jnzSo6hxohzNF3SOzp1DOStlU_27Q",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "127.0.0.1:3001/refresh_token",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "3001",
+							"path": [
+								"refresh_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://c1965c8c4e4d-1431750024507427177.ngrok-free.app",
+					"protocol": "https",
+					"host": [
+						"c1965c8c4e4d-1431750024507427177",
+						"ngrok-free",
+						"app"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

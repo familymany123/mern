@@ -1,0 +1,37 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cửa hàng đồ ăn nhanh</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ 
+</head>
+
+<body class="fixed-bottom-bar ">
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <script src="/node_modules/hc-offcanvas-nav/dist/hc-offcanvas-nav.js"></script>
+  
+  <script>
+    jQuery(document).ready(function ($) {
+
+      $('#main-nav').hcOffcanvasNav({
+        disableAt: false,
+        customToggle: ".toggle",
+        levelSpacing: 40,
+        navTitle: 'Food ',
+        levelTitles: true,
+        levelTitleAsBack: true,
+        pushContent: '#container',
+        insertClose: 2
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>
