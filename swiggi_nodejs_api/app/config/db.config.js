@@ -1,17 +1,16 @@
-const mongoose = require('mongoose');
+require("dotenv").config();
 
-const dbURI = 'mongodb://localhost:27017/swiggi'; // Replace with your MongoDB URI
+const mongoose = require("mongoose");
+
+const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(dbURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('Connected to MongoDB successfully.');
+    await mongoose.connect(dbURI);
+    console.log("Connected to MongoDB successfully.");
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-    process.exit(1); // Exit process with failure
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1);
   }
 };
 
