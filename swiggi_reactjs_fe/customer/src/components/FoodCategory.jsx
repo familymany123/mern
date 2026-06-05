@@ -4,6 +4,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import ProductItem from "./ProductItem";
 import { SidebarContext } from "../context/SidebarContext";
 import { fetchFoods } from "../features/foods/foodSlice";
+import API_BASE_URL from "../api/config";
 
 const FoodCategory = () => {
     const [categories, setCategories] = useState([]);
@@ -14,7 +15,7 @@ const FoodCategory = () => {
     useEffect(() => {
         const fetchCategories = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:3001/list_category");
+            const response = await fetch(`${API_BASE_URL}/list_category`);
             if (!response.ok) {
             throw new Error("Failed to fetch categories");
             }

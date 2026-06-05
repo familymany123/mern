@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { logOut, setToken } from "../features/auth/authSlice";
 import { store } from "../store/store";
-const API_BASE_URL = "http://localhost:3001";
+import API_BASE_URL from "./config";
 
 const baseApi = axios.create({
   baseURL: API_BASE_URL,

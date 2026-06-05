@@ -7,6 +7,7 @@ import {
   updateOrderStatus,
 } from "../../features/order/orderSlice";
 import { Link } from "react-router-dom";
+import API_BASE_URL from "../../api/config";
 
 const Order = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const Order = () => {
   useEffect(() => {
     dispatch(fetchOrder({ page: currentPage, limit: 10 }));
 
-    const socket = io("http://localhost:3001");
+    const socket = io(API_BASE_URL);
 
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id);

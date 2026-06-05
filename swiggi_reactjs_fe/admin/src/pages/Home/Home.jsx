@@ -13,6 +13,7 @@ import { fetchCurrentOrderCount } from "../../features/statistic/currentOrderSli
 import { fetchCurrentRevenue } from "../../features/statistic/currentRevenueSlice";
 import { fetchMonthlyOrderCount } from "../../features/statistic/monthlyOrderSlice";
 import { fetchMonthlyRevenue } from "../../features/statistic/monthlyRevenueSlice";
+import API_BASE_URL from "../../api/config";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale, PointElement, LineElement);
 
@@ -40,7 +41,7 @@ const Home = () => {
   useEffect(() => {
     const fetchOrderStatusData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:3001/statistics/percent?range=${orderStatusRange}`);
+        const response = await fetch(`${API_BASE_URL}/statistics/percent?range=${orderStatusRange}`);
         const data = await response.json();
         setOrderStatusData(data.result || []);
       } catch (error) {
@@ -57,7 +58,7 @@ const Home = () => {
     // Fetch API phần trăm trạng thái đơn hàng
     const fetchRevenueData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:3001/statistics/revenue_day_of_month?month=${month}`);
+        const response = await fetch(`${API_BASE_URL}/statistics/revenue_day_of_month?month=${month}`);
         const data = await response.json();
         const days = data.revenueByDay.map(item => item.day);
         const revenues = data.revenueByDay.map(item => item.totalRevenue);

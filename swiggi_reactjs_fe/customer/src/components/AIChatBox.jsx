@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../api/config";
 
 function AIChatBox() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,7 @@ function AIChatBox() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3001/chat-ai", {
+      const response = await axios.post(`${API_BASE_URL}/chat-ai`, {
         message: messageToSend,
       });
 
