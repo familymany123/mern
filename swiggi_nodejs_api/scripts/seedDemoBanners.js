@@ -9,27 +9,27 @@ const baseApi = process.env.BASE_API || "https://swiggi-api.onrender.com";
 const bannerSeeds = [
   {
     slug: "combo-an-nhanh",
-    image: `${baseApi}/uploads/generated-category-combo-an-nhanh.png`,
+    image: `${baseApi}/uploads/banner-combo-sot-cay.png`,
   },
   {
     slug: "ga-ran",
-    image: `${baseApi}/uploads/generated-category-ga-ran.png`,
+    image: `${baseApi}/uploads/banner-ga-ran-gion-rum.png`,
   },
   {
     slug: "burger",
-    image: `${baseApi}/uploads/generated-category-burger.png`,
+    image: `${baseApi}/uploads/banner-burger-tom.png`,
   },
   {
     slug: "mi-y",
-    image: `${baseApi}/uploads/generated-category-mi-y.png`,
+    image: `${baseApi}/uploads/banner-mi-y.png`,
   },
   {
     slug: "mon-phu",
-    image: `${baseApi}/uploads/generated-category-mon-phu.png`,
+    image: `${baseApi}/uploads/banner-thanh-vien-moi.png`,
   },
   {
     slug: "thuc-uong",
-    image: `${baseApi}/uploads/generated-category-thuc-uong.png`,
+    image: `${baseApi}/uploads/banner-combo-ga-ran.png`,
   },
 ];
 
