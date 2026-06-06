@@ -82,6 +82,10 @@ app.use(
   express.static(path.join(__dirname, "uploads"))
 );
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // Routes
 const route = require("./app/routes/index.js");
 
