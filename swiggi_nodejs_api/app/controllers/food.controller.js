@@ -7,6 +7,15 @@ const fs = require('fs');
 require('dotenv').config();
 
 class FoodController {
+  categoryOrderSlugs = [
+    'combo-an-nhanh',
+    'ga-ran',
+    'burger',
+    'mi-y',
+    'mon-phu',
+    'thuc-uong'
+  ];
+
   // [GET] /foods
   async index(req, res) {
     try {
@@ -62,7 +71,18 @@ class FoodController {
         // Chuyá»ƒn categoryDetails tá»« máº£ng thÃ nh object (náº¿u chá»‰ cÃ³ má»™t category)
         {
           $addFields: {
-            category: { $arrayElemAt: ['$categoryDetails', 0] }
+            category: { $arrayElemAt: ['$categoryDetails', 0] },
+            categoryOrder: {
+              $indexOfArray: [this.categoryOrderSlugs, { $arrayElemAt: ['$categoryDetails.slug', 0] }]
+            }
+          }
+        },
+
+        {
+          $addFields: {
+            categoryOrder: {
+              $cond: [{ $eq: ['$categoryOrder', -1] }, 999, '$categoryOrder']
+            }
           }
         },
       
@@ -77,7 +97,9 @@ class FoodController {
         // PhÃ¢n trang
         ...(sort === 'sold'
           ? [{ $sort: { sold: -1, created_at: -1 } }]
-          : [{ $sort: { created_at: -1 } }]),
+          : [{ $sort: { categoryOrder: 1, created_at: 1 } }]),
+
+        { $project: { categoryOrder: 0 } },
 
         ...(isAllLimit
           ? []
@@ -137,7 +159,24 @@ class FoodController {
   async listByCategory(req, res) {
     try {
       // Láº¥y táº¥t cáº£ chuyÃªn má»¥c
-      const categories = await Category.find().lean();
+      const categories = await Category.aggregate([
+        {
+          $addFields: {
+            categoryOrder: {
+              $indexOfArray: [this.categoryOrderSlugs, '$slug']
+            }
+          }
+        },
+        {
+          $addFields: {
+            categoryOrder: {
+              $cond: [{ $eq: ['$categoryOrder', -1] }, 999, '$categoryOrder']
+            }
+          }
+        },
+        { $sort: { categoryOrder: 1, created_at: 1 } },
+        { $project: { categoryOrder: 0 } }
+      ]);
   
       // Khá»Ÿi táº¡o máº£ng Ä‘á»ƒ lÆ°u káº¿t quáº£
       const result = [];
