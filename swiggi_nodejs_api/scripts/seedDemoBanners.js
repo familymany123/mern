@@ -1,0 +1,99 @@
+const mongoose = require("mongoose");
+const Banner = require("../app/models/banner.model");
+const Category = require("../app/models/category.model");
+require("dotenv").config();
+
+const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const baseApi = process.env.BASE_API || "https://swiggi-api.onrender.com";
+
+const bannerSeeds = [
+  {
+    slug: "combo-an-nhanh",
+    image: `${baseApi}/uploads/generated-category-combo-an-nhanh.png`,
+  },
+  {
+    slug: "ga-ran",
+    image: `${baseApi}/uploads/generated-category-ga-ran.png`,
+  },
+  {
+    slug: "burger",
+    image: `${baseApi}/uploads/generated-category-burger.png`,
+  },
+  {
+    slug: "mi-y",
+    image: `${baseApi}/uploads/generated-category-mi-y.png`,
+  },
+  {
+    slug: "mon-phu",
+    image: `${baseApi}/uploads/generated-category-mon-phu.png`,
+  },
+  {
+    slug: "thuc-uong",
+    image: `${baseApi}/uploads/generated-category-thuc-uong.png`,
+  },
+];
+
+async function main() {
+  await mongoose.connect(dbURI);
+
+  let created = 0;
+  let updated = 0;
+
+  for (const seed of bannerSeeds) {
+    const category = await Category.findOne({ slug: seed.slug });
+
+    if (!category) {
+      console.log(`Skip ${seed.slug}: category not found`);
+      continue;
+    }
+
+    const result = await Banner.updateOne(
+      { category: category._id },
+      {
+        $set: {
+          image: seed.image,
+          category: category._id,
+          show: true,
+          updated_at: new Date(),
+        },
+        $setOnInsert: {
+          created_at: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+
+    if (result.upsertedCount) {
+      created += 1;
+    } else if (result.modifiedCount) {
+      updated += 1;
+    }
+  }
+
+  const banners = await Banner.find()
+    .populate("category", "name slug")
+    .sort({ created_at: -1 })
+    .lean();
+
+  console.log(`Seeded banners. Created: ${created}, updated: ${updated}`);
+  console.log(
+    JSON.stringify(
+      banners.map((banner) => ({
+        category: banner.category?.name,
+        slug: banner.category?.slug,
+        show: banner.show,
+        image: banner.image,
+      })),
+      null,
+      2
+    )
+  );
+
+  await mongoose.disconnect();
+}
+
+main().catch(async (error) => {
+  console.error(error);
+  await mongoose.disconnect();
+  process.exit(1);
+});
