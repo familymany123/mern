@@ -1,10 +1,61 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
+  const [openMenus, setOpenMenus] = useState({
+    banner: false,
+    category: false,
+    coupons: false,
+    foods: false,
+    topping: false,
+    users: false,
+  });
+
+  const toggleMenu = (menu) => {
+    setOpenMenus((current) => ({
+      ...current,
+      [menu]: !current[menu],
+    }));
+  };
+
+  const menuButtonStyle = {
+    width: "100%",
+    border: 0,
+    background: "transparent",
+    textAlign: "left",
+  };
+
+  const renderMenu = ({ key, icon, label, children }) => {
+    const isOpen = openMenus[key];
+
+    return (
+      <li className={`nav-item ${isOpen ? "menu-open" : ""}`}>
+        <button
+          type="button"
+          className={`nav-link ${isOpen ? "active" : ""}`}
+          onClick={() => toggleMenu(key)}
+          style={menuButtonStyle}
+        >
+          <i className={`nav-icon ${icon}`}></i>
+          <p>
+            {label}
+            <i className="fas fa-angle-left right"></i>
+          </p>
+        </button>
+        <ul
+          className="nav nav-treeview"
+          style={{ display: isOpen ? "block" : "none" }}
+        >
+          {children}
+        </ul>
+      </li>
+    );
+  };
+
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
       <Link
-        to={"#"}
+        to={"/"}
         className="brand-link"
         style={{
           display: "flex",
@@ -16,16 +67,12 @@ const Sidebar = () => {
       </Link>
 
       <div className="sidebar">
-        
-
         <nav className="mt-2">
           <ul
             className="nav nav-pills nav-sidebar flex-column"
-            data-widget="treeview"
             role="menu"
             data-accordion="false"
           >
-            
             <li className="nav-item">
               <Link className="nav-link" to={"/"}>
                 <i className="nav-icon fas fa-tachometer-alt"></i>
@@ -39,145 +86,137 @@ const Sidebar = () => {
               </Link>
             </li>
 
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon fas fa-edit"></i>
-                <p>
-                  Banner
-                  <i className="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul className="nav nav-treeview">
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/banner/add"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Thêm banner </p>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/banners"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Danh sách banner </p>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon fas fa-edit"></i>
-                <p>
-                  Danh mục
-                  <i className="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul className="nav nav-treeview">
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/category/add"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Thêm danh mục </p>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/category"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Danh sách danh mục </p>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon fas fa-money-bill"></i>
-                <p>
-                  Mã giảm giá
-                  <i className="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul className="nav nav-treeview">
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/coupons/add"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Thêm mã giảm giá </p>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/coupons"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Danh sách mã giảm giá </p>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon fas fa-utensils"></i>
-                <p>
-                  Thực phẩm
-                  <i className="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul className="nav nav-treeview">
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/foods/add"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Thêm thực phẩm</p>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/foods" className="nav-link">
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Danh sách thực phẩm</p>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon fas fa-table"></i>
-                <p>
-                  Topping
-                  <i className="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul className="nav nav-treeview">
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/topping/add"}>
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Thêm topping</p>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/topping" className="nav-link">
-                    <i className="far fa-circle nav-icon"></i>
-                    <p>Danh sách topping</p>
-                  </Link>
-                </li>
-              </ul>
-            </li>
+            {renderMenu({
+              key: "banner",
+              icon: "fas fa-edit",
+              label: "Banner",
+              children: (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/banner/add"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Thêm banner</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/banners"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Danh sách banner</p>
+                    </Link>
+                  </li>
+                </>
+              ),
+            })}
+
+            {renderMenu({
+              key: "category",
+              icon: "fas fa-edit",
+              label: "Danh mục",
+              children: (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/category/add"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Thêm danh mục</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/category"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Danh sách danh mục</p>
+                    </Link>
+                  </li>
+                </>
+              ),
+            })}
+
+            {renderMenu({
+              key: "coupons",
+              icon: "fas fa-money-bill",
+              label: "Mã giảm giá",
+              children: (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/coupons/add"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Thêm mã giảm giá</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/coupons"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Danh sách mã giảm giá</p>
+                    </Link>
+                  </li>
+                </>
+              ),
+            })}
+
+            {renderMenu({
+              key: "foods",
+              icon: "fas fa-utensils",
+              label: "Thực phẩm",
+              children: (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/foods/add"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Thêm thực phẩm</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/foods" className="nav-link">
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Danh sách thực phẩm</p>
+                    </Link>
+                  </li>
+                </>
+              ),
+            })}
+
+            {renderMenu({
+              key: "topping",
+              icon: "fas fa-table",
+              label: "Topping",
+              children: (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" to={"/topping/add"}>
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Thêm topping</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/topping" className="nav-link">
+                      <i className="far fa-circle nav-icon"></i>
+                      <p>Danh sách topping</p>
+                    </Link>
+                  </li>
+                </>
+              ),
+            })}
+
             <li className="nav-item">
               <Link className="nav-link" to={"/orders"}>
                 <i className="nav-icon fas fa-address-book"></i>
-                Đơn hàng
+                <p>Đơn hàng</p>
               </Link>
             </li>
 
-            <li className="nav-item">
-              <a href="#" className="nav-link">
-                <i className="nav-icon fas fa-users"></i>
-                <p>
-                  Người dùng
-                  <i className="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul className="nav nav-treeview">
+            {renderMenu({
+              key: "users",
+              icon: "fas fa-users",
+              label: "Người dùng",
+              children: (
                 <li className="nav-item">
                   <Link to="/users" className="nav-link">
                     <i className="far fa-circle nav-icon"></i>
                     <p>Danh sách người dùng</p>
                   </Link>
                 </li>
-              </ul>
-            </li>
+              ),
+            })}
+
             <li className="nav-item">
               <Link className="nav-link" to={"/setting"}>
                 <svg
