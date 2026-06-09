@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import { CiSearch } from "react-icons/ci";
+import { useContext, useEffect } from "react";
 import { FaBars } from "react-icons/fa6";
 import { FiDisc } from "react-icons/fi";
-import { IoNavigate, IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline } from "react-icons/io5";
 import { LuUser } from "react-icons/lu";
-import { RiMapPinLine, RiShoppingCartLine } from "react-icons/ri";
+import { RiShoppingCartLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarContext } from "../context/SidebarContext";
@@ -18,10 +17,6 @@ const Header = () => {
   const { user } = useSelector((state) => state.user);
   const token = localStorage.getItem("accessToken");
   const { isActive, toggleSidebar } = useContext(SidebarContext);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [userAddress, setUserAddress] = useState("");
 
   useEffect(() => {
     if (token) {
@@ -33,57 +28,10 @@ const Header = () => {
     dispatch(logout());
     navigate("/login");
   };
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-
-          fetchAddress(latitude, longitude);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
-  }, []);
-   const { provinces } = useSelector((state) => state.provinces);
 
   useEffect(() => {
     dispatch(fetchProvinces(1, 10));
   }, [dispatch]);
-
-  const handleProvinceChange = (event) => {
-    setSelectedProvince(event.target.value);
-    setSearchTerm("");
-  };
-  const fetchAddress = async (latitude, longitude) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-      );
-      const data = await response.json();
-
-      if (data) {
-        setUserAddress(data?.address?.city);
-      } else {
-        console.log("Unable to fetch address.");
-      }
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      console.log("Error fetching address: " + error.message);
-    }
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-  const searchFilter = provinces.filter((province) => {
-    return province.name.toLowerCase().includes(searchTerm.toLowerCase());
-  });
   return (
     <>
       <header className="section-header  ">
