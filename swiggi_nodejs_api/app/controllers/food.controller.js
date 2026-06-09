@@ -6,16 +6,16 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-class FoodController {
-  categoryOrderSlugs = [
-    'combo-an-nhanh',
-    'ga-ran',
-    'burger',
-    'mi-y',
-    'mon-phu',
-    'thuc-uong'
-  ];
+const categoryOrderSlugs = [
+  'combo-an-nhanh',
+  'ga-ran',
+  'burger',
+  'mi-y',
+  'mon-phu',
+  'thuc-uong'
+];
 
+class FoodController {
   // [GET] /foods
   async index(req, res) {
     try {
@@ -73,7 +73,7 @@ class FoodController {
           $addFields: {
             category: { $arrayElemAt: ['$categoryDetails', 0] },
             categoryOrder: {
-              $indexOfArray: [this.categoryOrderSlugs, { $arrayElemAt: ['$categoryDetails.slug', 0] }]
+              $indexOfArray: [categoryOrderSlugs, { $arrayElemAt: ['$categoryDetails.slug', 0] }]
             }
           }
         },
@@ -163,7 +163,7 @@ class FoodController {
         {
           $addFields: {
             categoryOrder: {
-              $indexOfArray: [this.categoryOrderSlugs, '$slug']
+              $indexOfArray: [categoryOrderSlugs, '$slug']
             }
           }
         },
