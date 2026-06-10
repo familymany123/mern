@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Spinner from "../../components/Spinner";
-import { fetchOrderDetail } from "../../features/order/orderSlice";
+import { fetchOrderDetail, updateOrderStatus } from "../../features/order/orderSlice";
 import { fetchUserById } from "../../features/user/userSlice";
 import { formatMoney } from "../../utils/formatMoney";
 
@@ -20,6 +20,18 @@ const OrderDetail = () => {
       dispatch(fetchUserById(order?.order?.user));
     }
   }, [dispatch, order]);
+
+  const handleCompleteOrder = async () => {
+    if (!order?.order?._id) return;
+
+    try {
+      await dispatch(
+        updateOrderStatus({ orderId: order.order._id, status: "Completed" })
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (loading) {
     return <Spinner />;
@@ -56,12 +68,26 @@ const OrderDetail = () => {
                         {order?.order?.status}
                       </span>
                     )}
+                    {order?.order?.status === "Processing" && (
+                      <span className="badge badge-primary">
+                        {order?.order?.status}
+                      </span>
+                    )}
                     {order?.order?.status === "Cancelled" && (
                       <span className="badge badge-danger">
                         {order?.order?.status}
                       </span>
                     )}
                   </p>
+                  {order?.order?.status !== "Completed" &&
+                    order?.order?.status !== "Cancelled" && (
+                      <button
+                        className="btn btn-success mb-3"
+                        onClick={handleCompleteOrder}
+                      >
+                        Hoàn thành đơn
+                      </button>
+                    )}
                   <p>
                     <strong>Tổng tiền:</strong>{" "}
                     {formatMoney(order?.order?.amount)}

@@ -352,7 +352,7 @@ class OrderController {
       }
 
       const allowedTransitions = {
-        Pending: ["Processing"],
+        Pending: ["Processing", "Completed"],
         Processing: ["Completed"],
       };
 

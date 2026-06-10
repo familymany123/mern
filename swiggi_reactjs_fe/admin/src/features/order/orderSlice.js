@@ -83,6 +83,9 @@ const orderSlice = createSlice({
         if (index !== -1) {
           state.orders[index].status = action.payload.status;
         }
+        if (state.order?.order?._id === action.payload._id) {
+          state.order.order = action.payload;
+        }
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         const index = state.orders.findIndex(
@@ -90,6 +93,9 @@ const orderSlice = createSlice({
         );
         if (index !== -1) {
           state.orders[index].status = action.payload.status;
+        }
+        if (state.order?.order?._id === action.payload._id) {
+          state.order.order = action.payload;
         }
       })
       .addCase(fetchOrderDetail.fulfilled, (state, action) => {
