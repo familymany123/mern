@@ -79,15 +79,14 @@ const OrderDetail = () => {
                       </span>
                     )}
                   </p>
-                  {order?.order?.status !== "Completed" &&
-                    order?.order?.status !== "Cancelled" && (
-                      <button
-                        className="btn btn-success mb-3"
-                        onClick={handleCompleteOrder}
-                      >
-                        Hoàn thành đơn
-                      </button>
-                    )}
+                  {order?.order?.status === "Processing" && (
+                    <button
+                      className="btn btn-success mb-3"
+                      onClick={handleCompleteOrder}
+                    >
+                      Hoàn thành đơn
+                    </button>
+                  )}
                   <p>
                     <strong>Tổng tiền:</strong>{" "}
                     {formatMoney(order?.order?.amount)}

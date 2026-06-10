@@ -201,7 +201,7 @@ const Order = () => {
                             <option value="Processing">Chuyển sang đang xử lý</option>
                           )}
 
-                          {(order?.status === "Pending" || order?.status === "Processing") && (
+                          {order?.status === "Processing" && (
                             <option value="Completed">Chuyển sang hoàn thành</option>
                           )}
 
@@ -226,7 +226,7 @@ const Order = () => {
                             >
                               Sửa
                             </button>
-                            {order?.status !== "Completed" && order?.status !== "Cancelled" && (
+                            {order?.status === "Processing" && (
                               <button
                                 className="btn btn-success ml-2"
                                 onClick={() => handleCompleteOrder(order?._id)}
