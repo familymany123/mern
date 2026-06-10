@@ -26,6 +26,22 @@ function sortObject(obj) {
   return sorted;
 }
 
+function formatVnpayDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}${values.month}${values.day}${values.hour}${values.minute}${values.second}`;
+}
+
 class OrderController {
   // [GET] /orders
   async index(req, res) {
@@ -369,14 +385,21 @@ class OrderController {
   async vnpay(req, res) {
     try {
       const { coupon, ship, distance, timeShip, address, phone } = req.body;
+      const orderAmount = Number(req.body.amount);
+      const shippingFee = Number(ship || 0);
+
+      if (!Number.isFinite(orderAmount) || orderAmount <= 0) {
+        return res.status(400).json({
+          code: "01",
+          message: "So tien thanh toan khong hop le",
+        });
+      }
 
       var ipAddr =
         req.headers["x-forwarded-for"] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
-
-      var dateFormat = require("dateformat");
 
       const { vnp_TmnCode, vnp_HashSecret, vnp_Url, vnp_ReturnUrl } =
         vnpayConfig;
@@ -385,20 +408,27 @@ class OrderController {
       var secretKey = vnp_HashSecret;
       var vnpUrl = vnp_Url;
 
-      var returnUrl = `${vnp_ReturnUrl}/?coupon=${coupon}&ship=${ship}&distance=${distance}&timeShip=${timeShip}&address=${address}&phone=${phone}`;
+      const returnParams = new URLSearchParams({
+        coupon: coupon || "",
+        ship: String(shippingFee),
+        distance: distance || "",
+        timeShip: timeShip || "",
+        address: address || "",
+        phone: phone || "",
+      });
+      var returnUrl = `${vnp_ReturnUrl}?${returnParams.toString()}`;
 
       var date = new Date();
-      date.setHours(date.getHours() + 7);
 
-      var createDate = dateFormat(date, "yyyymmddHHmmss");
+      var createDate = formatVnpayDate(date);
 
       var expireDate = new Date(date);
       expireDate.setMinutes(expireDate.getMinutes() + 15);
 
-      var vnp_ExpireDate = dateFormat(expireDate, "yyyymmddHHmmss");
-      var orderId = dateFormat(date, "HHmmss");
+      var vnp_ExpireDate = formatVnpayDate(expireDate);
+      var orderId = formatVnpayDate(date);
 
-      var amount = parseInt(req.body.amount) + parseInt(ship);
+      var amount = Math.round(orderAmount + shippingFee);
       var bankCode = req.body.bankCode;
 
       var locale = req.body.language;
@@ -423,7 +453,7 @@ class OrderController {
       vnp_Params["vnp_CreateDate"] = createDate;
       vnp_Params["vnp_ExpireDate"] = vnp_ExpireDate;
 
-      if (bankCode !== null && bankCode !== "") {
+      if (bankCode) {
         vnp_Params["vnp_BankCode"] = bankCode;
       }
 

@@ -217,7 +217,7 @@ function Checkout() {
           {
             amount: calculateTotal(),
             orderId: generateOrderId(),
-            bankCode: "NCB",
+            bankCode: selectedBank,
             coupon: discountCode,
             ship: phiShip,
             distance: distanceShip,
