@@ -9,7 +9,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {   isLoggedIn } = useSelector((state) => state.user);
-  const { closeSidebar } = useContext(SidebarContext);
+  const { isActive, closeSidebar } = useContext(SidebarContext);
   const token = localStorage.getItem("accessToken");
   useEffect(() => {
     if (token) {
@@ -20,12 +20,18 @@ const Navbar = () => {
   console.log(isLoggedIn);
   return (
     <>
-      <nav id="main-nav" onClick={(event) => {
+      <nav id="main-nav" className={`customer-side-nav ${isActive ? "is-open" : ""}`} onClick={(event) => {
         const link = event.target.closest("a[href]");
         if (link && link.getAttribute("href") !== "#") {
           closeSidebar();
         }
       }}>
+        <div className="customer-side-nav-header">
+          <img alt="Swiggi" src="/img/logo_web.png" />
+          <button type="button" onClick={closeSidebar} aria-label="Close menu">
+            &times;
+          </button>
+        </div>
         <ul className="second-nav">
           <li>
             <Link to="home">
