@@ -16,7 +16,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const token = localStorage.getItem("accessToken");
-  const { isActive, toggleSidebar } = useContext(SidebarContext);
+  const { isActive, closeSidebar, toggleSidebar } = useContext(SidebarContext);
 
   useEffect(() => {
     if (token) {
@@ -217,7 +217,7 @@ const Header = () => {
           </div>
         </section>
       </header>
-      {isActive && <div className="overlay" onClick={toggleSidebar}></div>}
+      {isActive && <div className="overlay" onClick={closeSidebar}></div>}
     </>
   );
 };

@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { BiHome, BiMessage } from "react-icons/bi";
 import { PiPhoneCall } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { SidebarContext } from "../context/SidebarContext";
 import { userProfile } from "../features/user/userSlice";
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {   isLoggedIn } = useSelector((state) => state.user);
+  const { closeSidebar } = useContext(SidebarContext);
   const token = localStorage.getItem("accessToken");
   useEffect(() => {
     if (token) {
@@ -18,7 +20,12 @@ const Navbar = () => {
   console.log(isLoggedIn);
   return (
     <>
-      <nav id="main-nav">
+      <nav id="main-nav" onClick={(event) => {
+        const link = event.target.closest("a[href]");
+        if (link && link.getAttribute("href") !== "#") {
+          closeSidebar();
+        }
+      }}>
         <ul className="second-nav">
           <li>
             <Link to="home">
