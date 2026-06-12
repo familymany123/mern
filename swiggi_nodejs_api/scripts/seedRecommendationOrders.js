@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const User = require("../app/models/user.model");
+require("../app/models/category.model");
 const Food = require("../app/models/food.model");
 const Order = require("../app/models/order.model");
 const DetailOrder = require("../app/models/detail_orders.model");
