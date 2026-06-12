@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const Food = require("../app/models/food.model");
 const Category = require("../app/models/category.model");
 require("dotenv").config();
+const getMongoDbUri = require("../app/config/mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 
 async function main() {
   await mongoose.connect(dbURI);

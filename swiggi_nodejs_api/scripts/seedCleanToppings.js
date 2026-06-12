@@ -6,8 +6,9 @@ const Food = require("../app/models/food.model");
 const FoodTopping = require("../app/models/foodTopping.model");
 const Topping = require("../app/models/topping.model");
 require("dotenv").config();
+const getMongoDbUri = require("../app/config/mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 
 const toppings = [
   { key: "tuong-ca", name: "2 gói tương cà", price: 1000 },

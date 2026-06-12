@@ -1,8 +1,9 @@
 require("dotenv").config();
 
 const mongoose = require("mongoose");
+const getMongoDbUri = require("./mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 
 const connectDB = async () => {
   try {

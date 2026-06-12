@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const Banner = require("../app/models/banner.model");
 const Category = require("../app/models/category.model");
 require("dotenv").config();
+const getMongoDbUri = require("../app/config/mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 const baseApi = process.env.BASE_API || "https://swiggi-api.onrender.com";
 
 const bannerSeeds = [

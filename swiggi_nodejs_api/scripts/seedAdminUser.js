@@ -2,8 +2,9 @@ const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const User = require("../app/models/user.model");
 require("dotenv").config();
+const getMongoDbUri = require("../app/config/mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 
 const adminUser = {
   fullname: "Admin Demo",

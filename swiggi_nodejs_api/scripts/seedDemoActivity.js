@@ -7,8 +7,9 @@ const Order = require("../app/models/order.model");
 const DetailOrder = require("../app/models/detail_orders.model");
 const Review = require("../app/models/review.model");
 require("dotenv").config();
+const getMongoDbUri = require("../app/config/mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 
 const CUSTOMER_COUNT = 32;
 const ORDER_COUNT = 140;

@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Food = require("../app/models/food.model");
 require("dotenv").config();
+const getMongoDbUri = require("../app/config/mongodbUri");
 
-const dbURI = process.env.MONGODB_URI || "mongodb://localhost:27017/swiggi";
+const dbURI = getMongoDbUri();
 const baseApi = process.env.BASE_API || "http://127.0.0.1:3001";
 
 const imageBySlug = {
