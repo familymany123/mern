@@ -17,6 +17,7 @@ const reviewRoute = require("./review.routes.js")
 const foodController = require('../controllers/food.controller.js');
 const chataiRoute = require("./chatai.routes.js");
 const shippingRoute = require("./shipping.routes.js");
+const recommendationRoute = require("./recommendation.routes.js");
 
 function route(app){
     app.use("/categories", categoryRoute);
@@ -34,6 +35,7 @@ function route(app){
     app.use("/orders", orderRoute);
     app.use("/statistics", statisticRoute);
     app.use("/shipping", shippingRoute);
+    app.use("/recommendations", recommendationRoute);
     app.use("/", authRoute);
     app.use('/reviews', reviewRoute);
     app.use("/chat-ai", chataiRoute);

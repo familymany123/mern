@@ -9,6 +9,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import baseApi from "../../api/baseApi";
 import { SidebarContext } from "../../context/SidebarContext";
 import {
+  addItemToCart,
   fetchCartItems,
   removeItemFromCart,
   updateCartItem,
@@ -46,6 +47,7 @@ function Checkout() {
   const [shippingAddress, setShippingAddress] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedBank, setSelectedBank] = useState('');
+  const [recommendations, setRecommendations] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
   const { toggleSidebar } = useContext(SidebarContext);
@@ -58,6 +60,38 @@ function Checkout() {
 
   const handleRemoveItem = (id) => {
     dispatch(removeItemFromCart(id));
+  };
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      const foodIds = items.map((item) => item.food?._id).filter(Boolean);
+
+      if (!foodIds.length) {
+        setRecommendations([]);
+        return;
+      }
+
+      try {
+        const response = await baseApi.post("/recommendations", {
+          foodIds,
+          limit: 4,
+        });
+        setRecommendations(response.data.recommendations || []);
+      } catch {
+        setRecommendations([]);
+      }
+    };
+
+    fetchRecommendations();
+  }, [items]);
+
+  const handleAddRecommendation = async (foodId) => {
+    try {
+      await dispatch(addItemToCart({ food: foodId, toppings: [], quantity: 1 })).unwrap();
+      await dispatch(fetchCartItems()).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     // Check if user is authenticated
@@ -317,7 +351,7 @@ function Checkout() {
       setTimeShip(`${durationMinute} phút`);
       setPhiShip(fee);
       setShippingAddress(fullAddress);
-    } catch (error) {
+    } catch {
       setDistanceShip("0 km");
       setTimeShip("0 phút");
       setPhiShip(0);
@@ -650,6 +684,41 @@ function Checkout() {
                   </Fragment>
                 ))}
               </div>
+              {recommendations.length > 0 && (
+                <div className="bg-white border-bottom p-3">
+                  <h6 className="font-weight-bold mb-3">Gợi ý thêm cho bạn</h6>
+                  {recommendations.map((food) => (
+                    <div
+                      key={food._id}
+                      className="d-flex align-items-center justify-content-between mb-3"
+                    >
+                      <div className="d-flex align-items-center">
+                        <img
+                          src={food.image}
+                          alt={food.name}
+                          className="img-fluid rounded mr-3"
+                          width="54"
+                          height="54"
+                          style={{ objectFit: "cover" }}
+                        />
+                        <div>
+                          <p className="mb-1 font-weight-bold">{food.name}</p>
+                          <p className="mb-0 text-muted small">
+                            {formatMoney(food.price)}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleAddRecommendation(food._id)}
+                      >
+                        Thêm
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
               {
                 calculateTotal() != 0
                   ?

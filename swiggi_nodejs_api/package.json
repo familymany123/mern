@@ -8,7 +8,8 @@
     "start": "nodemon server.js",
     "seed:activity": "node scripts/seedDemoActivity.js",
     "seed:banners": "node scripts/seedDemoBanners.js",
-    "seed:recommendations": "node scripts/seedRecommendationOrders.js"
+    "seed:recommendations": "node scripts/seedRecommendationOrders.js",
+    "train:recommendations": "node scripts/trainRecommendations.js"
   },
   "keywords": [
     "nodejs",

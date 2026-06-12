@@ -5,6 +5,7 @@ const Coupon = require("../models/coupon.model");
 const qs = require("qs");
 const crypto = require("crypto");
 const vnpayConfig = require("../config/vnpay");
+const recommenderService = require("../services/recommender.service");
 
 function sortObject(obj) {
   let sorted = {};
@@ -40,6 +41,14 @@ function formatVnpayDate(date = new Date()) {
 
   const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
   return `${values.year}${values.month}${values.day}${values.hour}${values.minute}${values.second}`;
+}
+
+async function learnRecommendationsSafely(orderId) {
+  try {
+    await recommenderService.learnFromOrder(orderId);
+  } catch (error) {
+    console.error("Recommendation learning failed:", error);
+  }
 }
 
 class OrderController {
@@ -121,6 +130,8 @@ class OrderController {
       if (io) {
         io.emit("orderStatusUpdated", savedOrder);
       }
+
+      learnRecommendationsSafely(savedOrder._id);
 
       return res.status(200).json({
         message: "Đơn hàng đã được giao thành công",
@@ -229,6 +240,8 @@ class OrderController {
       if (io) {
         io.emit("newOrder", savedOrder);
       }
+
+      learnRecommendationsSafely(savedOrder._id);
 
       return res.status(201).json({
         message: "Đơn hàng đã được tạo thành công",
@@ -369,6 +382,8 @@ class OrderController {
       if (io) {
         io.emit("orderStatusUpdated", savedOrder);
       }
+
+      learnRecommendationsSafely(savedOrder._id);
 
       return res.status(200).json({
         message: "Trạng thái đơn hàng đã được cập nhật thành công",

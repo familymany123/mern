@@ -78,8 +78,8 @@ const cartSlice = createSlice({
       .addCase(addItemToCart.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(addItemToCart.fulfilled, (state, action) => {
-        // state.status = "succeeded";
+      .addCase(addItemToCart.fulfilled, (state) => {
+        state.status = "succeeded";
         // console.log(action.payload.cart);
         // const { food, toppings, quantity } = action.payload;
         // const existingItem = state.items.find(
