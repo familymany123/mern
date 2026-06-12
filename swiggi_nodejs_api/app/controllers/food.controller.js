@@ -82,6 +82,16 @@ class FoodController {
           $addFields: {
             categoryOrder: {
               $cond: [{ $eq: ['$categoryOrder', -1] }, 999, '$categoryOrder']
+            },
+            popularityGroup: {
+              $switch: {
+                branches: [
+                  { case: { $lte: ['$categoryOrder', 3] }, then: 0 },
+                  { case: { $eq: ['$categoryOrder', 4] }, then: 1 },
+                  { case: { $eq: ['$categoryOrder', 5] }, then: 2 }
+                ],
+                default: 3
+              }
             }
           }
         },
@@ -96,10 +106,10 @@ class FoodController {
       
         // PhÃ¢n trang
         ...(sort === 'sold'
-          ? [{ $sort: { sold: -1, created_at: -1 } }]
+          ? [{ $sort: { popularityGroup: 1, sold: -1, created_at: -1 } }]
           : [{ $sort: { categoryOrder: 1, created_at: 1 } }]),
 
-        { $project: { categoryOrder: 0 } },
+        { $project: { categoryOrder: 0, popularityGroup: 0 } },
 
         ...(isAllLimit
           ? []
