@@ -29,7 +29,7 @@ const Header = () => {
     dispatch(logout());
     dispatch(logoutUser());
     dispatch(clearCart());
-    navigate("/login");
+    navigate("/");
   };
 
   useEffect(() => {
