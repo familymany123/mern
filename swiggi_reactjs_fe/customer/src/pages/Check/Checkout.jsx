@@ -10,6 +10,7 @@ import baseApi from "../../api/baseApi";
 import { SidebarContext } from "../../context/SidebarContext";
 import {
   addItemToCart,
+  clearCart,
   fetchCartItems,
   removeItemFromCart,
   updateCartItem,
@@ -52,7 +53,12 @@ function Checkout() {
   const navigate = useNavigate();
   const { toggleSidebar } = useContext(SidebarContext);
   useEffect(() => {
-    dispatch(fetchCartItems(123));
+    if (!localStorage.getItem("accessToken")) {
+      dispatch(clearCart());
+      return;
+    }
+
+    dispatch(fetchCartItems());
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchCoupons(123));
@@ -96,6 +102,12 @@ function Checkout() {
   useEffect(() => {
     // Check if user is authenticated
     const checkAuth = async () => {
+      if (!localStorage.getItem("accessToken")) {
+        dispatch(clearCart());
+        setIsAuthenticated(false);
+        return;
+      }
+
       try {
         const response = await baseApi.get("/users/profile");
         if (response.data?._id) {

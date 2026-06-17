@@ -13,6 +13,7 @@ const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
   if (!refreshToken) {
+    localStorage.removeItem("accessToken");
     window.location.replace("/login");
     throw new Error("No refresh token available");
   }
@@ -29,6 +30,7 @@ const refreshAccessToken = async () => {
     console.log(error);
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("accessToken");
+    window.location.replace("/login");
     throw error;
   }
 };
@@ -37,6 +39,7 @@ baseApi.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
     console.log(token);
+    config._hadAccessToken = Boolean(token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -59,6 +62,12 @@ baseApi.interceptors.response.use(
     const status = error.response ? error.response.status : null;
     console.log(status);
     if (status === 401) {
+      if (!error.config?._hadAccessToken) {
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("accessToken");
+        window.location.replace("/login");
+        return Promise.reject(error);
+      }
       try {
         const newAccessToken = await refreshAccessToken();
         error.config.headers.Authorization = `Bearer ${newAccessToken}`;

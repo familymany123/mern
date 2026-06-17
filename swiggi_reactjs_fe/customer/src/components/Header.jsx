@@ -8,8 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarContext } from "../context/SidebarContext";
 import { logout } from "../features/auth/authSlice";
+import { clearCart } from "../features/cart/cartSlice";
 import { fetchProvinces } from "../features/provinces/provinceSlice";
-import { userProfile } from "../features/user/userSlice";
+import { logout as logoutUser, userProfile } from "../features/user/userSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,8 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(logoutUser());
+    dispatch(clearCart());
     navigate("/login");
   };
 
