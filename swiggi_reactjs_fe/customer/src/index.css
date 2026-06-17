@@ -674,11 +674,390 @@ p {
 
 /* Login Page */
 
-.login-page video {
-  width: 50%;
+.login-page {
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.fast-food-motion {
   position: absolute;
+  inset: 0 50% 0 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 211, 89, 0.36), transparent 28%),
+    radial-gradient(circle at 72% 76%, rgba(231, 56, 68, 0.34), transparent 32%),
+    linear-gradient(135deg, #1f1410 0%, #3a1714 42%, #711f19 100%);
+}
+
+.fast-food-motion::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  background:
+    linear-gradient(110deg, transparent 0 34%, rgba(255, 255, 255, 0.1) 38%, transparent 46%),
+    repeating-linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 22px);
+  animation: authLightSweep 9s linear infinite;
+}
+
+.fast-food-motion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.28));
+}
+
+.motion-glow,
+.speed-line,
+.sauce-drop,
+.food-stage {
+  position: absolute;
+  z-index: 1;
+}
+
+.motion-glow {
+  border-radius: 999px;
+  filter: blur(20px);
+  opacity: 0.75;
+}
+
+.motion-glow-one {
+  width: 260px;
+  height: 260px;
+  left: 7%;
+  top: 14%;
+  background: rgba(255, 193, 7, 0.34);
+  animation: authFloatSlow 8s ease-in-out infinite;
+}
+
+.motion-glow-two {
+  width: 210px;
+  height: 210px;
+  right: 8%;
+  bottom: 10%;
+  background: rgba(226, 56, 68, 0.44);
+  animation: authFloatSlow 7s ease-in-out infinite reverse;
+}
+
+.speed-line {
+  width: 240px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  transform: rotate(-18deg);
+  animation: authSpeedLine 4.2s linear infinite;
+}
+
+.speed-line-one {
+  left: -30%;
+  top: 27%;
+}
+
+.speed-line-two {
+  left: -42%;
+  top: 66%;
+  animation-delay: 1.6s;
+}
+
+.sauce-drop {
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 50% 12%;
+  background: #ffd24d;
+  box-shadow: 0 0 18px rgba(255, 210, 77, 0.45);
+  animation: authSauceDrop 5.5s ease-in-out infinite;
+}
+
+.sauce-drop-one {
+  left: 19%;
+  top: 18%;
+}
+
+.sauce-drop-two {
+  right: 16%;
+  top: 34%;
+  width: 16px;
+  height: 16px;
+  background: #ff6045;
+  animation-delay: 1.9s;
+}
+
+.food-stage {
+  width: min(76%, 620px);
+  height: min(62vh, 520px);
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  animation: authStageDrift 6s ease-in-out infinite;
+}
+
+.burger-stack {
+  position: absolute;
+  left: 19%;
+  bottom: 18%;
+  width: 54%;
+  height: 45%;
+  filter: drop-shadow(0 30px 28px rgba(0, 0, 0, 0.35));
+  animation: authBurgerBounce 3.8s ease-in-out infinite;
+}
+
+.burger-bun,
+.burger-lettuce,
+.burger-cheese,
+.burger-patty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.burger-bun {
+  background: linear-gradient(#f9c76b, #d9892d);
+  box-shadow: inset 0 -8px 0 rgba(118, 54, 18, 0.18);
+}
+
+.burger-bun-top {
+  top: 0;
+  width: 90%;
+  height: 38%;
+  border-radius: 54% 54% 22% 22%;
+}
+
+.burger-bun-top i {
+  position: absolute;
+  width: 9px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.burger-bun-top i:nth-child(1) {
+  left: 26%;
+  top: 24%;
+}
+
+.burger-bun-top i:nth-child(2) {
+  left: 48%;
+  top: 17%;
+}
+
+.burger-bun-top i:nth-child(3) {
+  right: 26%;
+  top: 29%;
+}
+
+.burger-lettuce {
+  top: 35%;
+  width: 96%;
+  height: 16%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #7ccf45, #3f9c32);
+  clip-path: polygon(0 44%, 8% 18%, 17% 48%, 27% 18%, 38% 50%, 49% 18%, 61% 48%, 72% 18%, 84% 48%, 94% 20%, 100% 44%, 100% 100%, 0 100%);
+}
+
+.burger-cheese {
+  top: 46%;
+  width: 92%;
+  height: 18%;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffd65a, #ff9f1c);
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 68% 72%, 60% 100%, 50% 72%, 0 72%);
+}
+
+.burger-patty {
+  top: 58%;
+  width: 88%;
+  height: 20%;
+  border-radius: 999px;
+  background: linear-gradient(#5a241b, #2c100c);
+}
+
+.burger-bun-bottom {
   bottom: 0;
-  right: 50%;
+  width: 88%;
+  height: 25%;
+  border-radius: 24px 24px 48px 48px;
+}
+
+.fries-pack {
+  position: absolute;
+  left: 0;
+  bottom: 24%;
+  width: 28%;
+  height: 48%;
+  transform: rotate(-10deg);
+  animation: authFriesWiggle 4s ease-in-out infinite;
+}
+
+.fries-pack span {
+  position: absolute;
+  bottom: 32%;
+  width: 14%;
+  height: 64%;
+  border-radius: 10px 10px 4px 4px;
+  background: linear-gradient(#ffe184, #ffb629);
+  box-shadow: inset -4px 0 rgba(206, 124, 16, 0.18);
+}
+
+.fries-pack span:nth-child(1) {
+  left: 18%;
+  transform: rotate(-8deg);
+}
+
+.fries-pack span:nth-child(2) {
+  left: 36%;
+  height: 78%;
+}
+
+.fries-pack span:nth-child(3) {
+  left: 54%;
+  height: 70%;
+  transform: rotate(8deg);
+}
+
+.fries-pack span:nth-child(4) {
+  left: 70%;
+  height: 58%;
+  transform: rotate(14deg);
+}
+
+.fries-box {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 0;
+  height: 46%;
+  border-radius: 10px 10px 28px 28px;
+  background: linear-gradient(145deg, #ef3340, #bb1625);
+  box-shadow: inset 0 16px rgba(255, 255, 255, 0.15), 0 18px 26px rgba(0, 0, 0, 0.25);
+}
+
+.drink-cup {
+  position: absolute;
+  right: 2%;
+  bottom: 18%;
+  width: 22%;
+  height: 56%;
+  animation: authDrinkFloat 4.8s ease-in-out infinite;
+}
+
+.drink-lid {
+  position: absolute;
+  left: 8%;
+  top: 20%;
+  width: 84%;
+  height: 9%;
+  border-radius: 999px;
+  background: #fff7e7;
+}
+
+.drink-straw {
+  position: absolute;
+  left: 54%;
+  top: 0;
+  width: 8%;
+  height: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffffff 0 35%, #e23844 35% 65%, #ffffff 65%);
+  transform: rotate(13deg);
+  transform-origin: bottom;
+}
+
+.drink-body {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 27%;
+  bottom: 0;
+  border-radius: 8px 8px 28px 28px;
+  background:
+    linear-gradient(105deg, rgba(255, 255, 255, 0.36) 0 18%, transparent 18%),
+    linear-gradient(#ff4a44, #c71932);
+  box-shadow: inset 0 -20px rgba(116, 15, 23, 0.22), 0 24px 28px rgba(0, 0, 0, 0.22);
+}
+
+@keyframes authLightSweep {
+  0% {
+    transform: translateX(-12%) translateY(0);
+  }
+  100% {
+    transform: translateX(12%) translateY(4%);
+  }
+}
+
+@keyframes authFloatSlow {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, -22px, 0) scale(1.08);
+  }
+}
+
+@keyframes authSpeedLine {
+  0% {
+    transform: translateX(0) rotate(-18deg);
+    opacity: 0;
+  }
+  16%,
+  70% {
+    opacity: 0.72;
+  }
+  100% {
+    transform: translateX(78vw) rotate(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes authSauceDrop {
+  0%,
+  100% {
+    transform: translateY(0) rotate(45deg) scale(1);
+  }
+  50% {
+    transform: translateY(24px) rotate(45deg) scale(1.18);
+  }
+}
+
+@keyframes authStageDrift {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(-1deg);
+  }
+  50% {
+    transform: translate(-50%, -53%) rotate(1deg);
+  }
+}
+
+@keyframes authBurgerBounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.015);
+  }
+}
+
+@keyframes authFriesWiggle {
+  0%,
+  100% {
+    transform: rotate(-10deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-5deg) translateY(-8px);
+  }
+}
+
+@keyframes authDrinkFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(7deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(3deg);
+  }
 }
 
 .otp input.form-control.form-control-lg {
@@ -1258,7 +1637,7 @@ footer .text-muted {
   .hc-nav-trigger span::after {
     background: #ffffff !important;
   }
-  .login-page video {
+  .fast-food-motion {
     display: none;
   }
   .login-page .px-5.col-10.mx-auto {
@@ -1333,7 +1712,7 @@ footer .text-muted {
   .hc-nav-trigger span::after {
     background: #ffffff !important;
   }
-  .login-page video {
+  .fast-food-motion {
     display: none;
   }
   .login-page .px-5.col-10.mx-auto {
