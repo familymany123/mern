@@ -176,7 +176,7 @@ const ProfileLayout = () => {
                     </div>
                   </Link>
                   <Link
-                    to="contact"
+                    to="/contact"
                     className="d-flex w-100 align-items-center border-bottom px-3 py-4"
                   >
                     <div className="left mr-3">

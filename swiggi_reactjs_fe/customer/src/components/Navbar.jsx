@@ -56,7 +56,7 @@ const Navbar = () => {
                   <Link to="favorites">Hỗ trợ giao hàng</Link>
                 </li>
                 <li>
-                  <Link to="contact">Liên hệ</Link>
+                  <Link to="/contact">Liên hệ</Link>
                 </li>
                 <li>
                   <Link to="terms">Điều khoản sử dụng</Link>
@@ -76,7 +76,7 @@ const Navbar = () => {
                   <Link to="login">Đăng nhập</Link>
                 </li>
                 <li>
-                  <Link to="signup">Đăng ký</Link>
+                  <Link to="/sign-up">Đăng ký</Link>
                 </li>
               </ul>
             </li>
@@ -106,7 +106,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="ko-fi">
-            <Link to="contact">
+            <Link to="/contact">
               <p className="h5 m-0">
                 <PiPhoneCall />
               </p>

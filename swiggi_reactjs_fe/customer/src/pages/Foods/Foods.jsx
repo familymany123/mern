@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { FaChevronDown, FaMapMarkerAlt, FaRegStar } from "react-icons/fa";
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Slider from "react-slick";
 import baseApi from "../../api/baseApi";
 import { addItemToCart } from "../../features/cart/cartSlice";
@@ -259,9 +259,9 @@ const Foods = () => {
                 </i>
               </a>
             </div>
-            <a href="contact" className="btn btn-sm btn-outline-light ml-auto">
+            <Link to="/contact" className="btn btn-sm btn-outline-light ml-auto">
               Liên hệ
-            </a>
+            </Link>
           </div>
         </div>
       </div>

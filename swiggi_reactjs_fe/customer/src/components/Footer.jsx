@@ -136,7 +136,7 @@ const Footer = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="contact" className="text-muted">
+                    <Link to="/contact" className="text-muted">
                       Liên hệ
                     </Link>
                   </li>
