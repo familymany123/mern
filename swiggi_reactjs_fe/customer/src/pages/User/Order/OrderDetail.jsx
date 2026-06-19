@@ -9,6 +9,11 @@ const OrderDetail = () => {
   const dispatch = useDispatch();
   const { order } = useSelector((state) => state.orders);
   const { coupon } = useSelector((state) => state.coupons);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [id]);
+
   useEffect(() => {
     dispatch(fetchDetailsOrder(id));
   }, [dispatch, id]);
