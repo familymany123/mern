@@ -2,30 +2,9 @@ const Order = require("../models/order.model");
 const DetailOrder = require("../models/detail_orders.model");
 const Cart = require("../models/cart.model");
 const Coupon = require("../models/coupon.model");
-const qs = require("qs");
-const crypto = require("crypto");
+const { VNPay } = require("vnpay");
 const vnpayConfig = require("../config/vnpay");
 const recommenderService = require("../services/recommender.service");
-
-function sortObject(obj) {
-  let sorted = {};
-  let str = [];
-  let key;
-
-  for (key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      str.push(encodeURIComponent(key));
-    }
-  }
-
-  str.sort();
-
-  for (key = 0; key < str.length; key++) {
-    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-  }
-
-  return sorted;
-}
 
 function formatVnpayDate(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -423,7 +402,7 @@ class OrderController {
 
       var tmnCode = vnp_TmnCode;
       var secretKey = vnp_HashSecret;
-      var vnpUrl = vnp_Url;
+      const paymentEndpoint = new URL(vnp_Url);
 
       const returnParams = new URLSearchParams({
         coupon: coupon || "",
@@ -437,12 +416,12 @@ class OrderController {
 
       var date = new Date();
 
-      var createDate = formatVnpayDate(date);
+      var createDate = Number(formatVnpayDate(date));
 
       var expireDate = new Date(date);
       expireDate.setMinutes(expireDate.getMinutes() + 15);
 
-      var vnp_ExpireDate = formatVnpayDate(expireDate);
+      var vnp_ExpireDate = Number(formatVnpayDate(expireDate));
       var orderId = formatVnpayDate(date);
 
       var amount = Math.round(orderAmount + shippingFee);
@@ -453,41 +432,34 @@ class OrderController {
         locale = "vn";
       }
 
-      var currCode = "VND";
-      var vnp_Params = {};
+      const vnpay = new VNPay({
+        tmnCode,
+        secureSecret: secretKey,
+        vnpayHost: paymentEndpoint.origin,
+        testMode: paymentEndpoint.hostname === "sandbox.vnpayment.vn",
+        hashAlgorithm: "SHA512",
+        enableLog: false,
+        endpoints: {
+          paymentEndpoint: paymentEndpoint.pathname.replace(/^\/+/, ""),
+        },
+      });
 
-      vnp_Params["vnp_Version"] = "2.1.0";
-      vnp_Params["vnp_Command"] = "pay";
-      vnp_Params["vnp_TmnCode"] = tmnCode;
-      vnp_Params["vnp_Locale"] = "vn";
-      vnp_Params["vnp_CurrCode"] = currCode;
-      vnp_Params["vnp_TxnRef"] = orderId;
-      vnp_Params["vnp_OrderInfo"] = "thanh toan vnpay";
-      vnp_Params["vnp_OrderType"] = "order";
-      vnp_Params["vnp_Amount"] = amount * 100;
-      vnp_Params["vnp_ReturnUrl"] = returnUrl;
-      vnp_Params["vnp_IpAddr"] = ipAddr;
-      vnp_Params["vnp_CreateDate"] = createDate;
-      vnp_Params["vnp_ExpireDate"] = vnp_ExpireDate;
+      const paymentData = {
+        vnp_Amount: amount,
+        vnp_IpAddr: ipAddr,
+        vnp_ReturnUrl: returnUrl,
+        vnp_TxnRef: orderId,
+        vnp_OrderInfo: "thanh toan vnpay",
+        vnp_Locale: locale,
+        vnp_CreateDate: createDate,
+        vnp_ExpireDate,
+      };
 
       if (bankCode) {
-        vnp_Params["vnp_BankCode"] = bankCode;
+        paymentData.vnp_BankCode = bankCode;
       }
 
-      vnp_Params = sortObject(vnp_Params);
-
-      var querystring = require("qs");
-      var signData = querystring.stringify(vnp_Params, { encode: false });
-
-      var crypto = require("crypto");
-      var hmac = crypto.createHmac("sha512", secretKey);
-      var signed = hmac
-        .update(Buffer.from(signData, "utf-8"))
-        .digest("hex");
-
-      vnp_Params["vnp_SecureHash"] = signed;
-
-      vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
+      const vnpUrl = vnpay.buildPaymentUrl(paymentData);
 
       return res.status(200).json({
         code: "00",
