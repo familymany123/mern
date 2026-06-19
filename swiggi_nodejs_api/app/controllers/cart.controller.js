@@ -59,13 +59,16 @@ class CartController {
                 return res.status(400).json({ message: 'Thực phẩm và số lượng là bắt buộc và phải lớn hơn 0' });
             }
 
-            const toppingIds = toppings.map((topping) =>
-                typeof topping === "object" ? topping._id : topping
-            );
+            const foodId = typeof food === "object" ? food._id : food;
+            const toppingIds = [...new Set(
+                toppings.map((topping) =>
+                    String(typeof topping === "object" ? topping._id : topping)
+                )
+            )].sort();
 
             if (toppingIds.length > 0) {
                 const validToppingsCount = await FoodTopping.countDocuments({
-                    food: typeof food === "object" ? food._id : food,
+                    food: foodId,
                     topping: { $in: toppingIds }
                 });
 
@@ -74,9 +77,45 @@ class CartController {
                 }
             }
 
+            const cartsForFood = await Cart.find({
+                user: req.user.userId,
+                food: foodId
+            });
+            const matchingCarts = cartsForFood.filter((cart) => {
+                const existingToppingIds = cart.toppings
+                    .map((toppingId) => String(toppingId))
+                    .sort();
+
+                return existingToppingIds.length === toppingIds.length &&
+                    existingToppingIds.every((toppingId, index) =>
+                        toppingId === toppingIds[index]
+                    );
+            });
+
+            if (matchingCarts.length > 0) {
+                const [existingCart, ...duplicateCarts] = matchingCarts;
+                existingCart.quantity = matchingCarts.reduce(
+                    (total, cart) => total + cart.quantity,
+                    Number(quantity)
+                );
+                existingCart.updated_at = new Date();
+                await existingCart.save();
+
+                if (duplicateCarts.length > 0) {
+                    await Cart.deleteMany({
+                        _id: { $in: duplicateCarts.map((cart) => cart._id) }
+                    });
+                }
+
+                return res.json({
+                    message: 'Cap nhat so luong trong gio hang thanh cong',
+                    cart: existingCart
+                });
+            }
+
             const newCart = new Cart({
                 user: req.user.userId,
-                food: typeof food === "object" ? food._id : food,
+                food: foodId,
                 toppings: toppingIds,
                 quantity
             });
