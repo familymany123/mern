@@ -415,10 +415,7 @@ class OrderController {
       var orderId = formatVnpayDate(date);
 
       var amount = Math.round(orderAmount + shippingFee);
-      var locale = req.body.language;
-      if (locale === null || locale === "") {
-        locale = "vn";
-      }
+      const locale = req.body.language === "en" ? "en" : "vn";
 
       const vnpay = new VNPay({
         tmnCode,
