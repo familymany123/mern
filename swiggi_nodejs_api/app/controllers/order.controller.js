@@ -410,11 +410,13 @@ class OrderController {
         });
       }
 
-      var ipAddr =
-        req.headers["x-forwarded-for"] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+      const forwardedFor = req.headers["x-forwarded-for"];
+      var ipAddr = (
+        Array.isArray(forwardedFor)
+          ? forwardedFor[0]
+          : forwardedFor?.split(",")[0]
+      ) || req.socket.remoteAddress || req.connection.remoteAddress;
+      ipAddr = String(ipAddr || "").replace(/^::ffff:/, "").trim();
 
       const { vnp_TmnCode, vnp_HashSecret, vnp_Url, vnp_ReturnUrl } =
         vnpayConfig;
