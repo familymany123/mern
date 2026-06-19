@@ -19,14 +19,7 @@ import { fetchCoupons } from "../../features/coupons/couponSlice";
 import { createOrder, createOrderVnpay } from "../../features/order/orderSlice";
 import { formatMoney } from "../../utils/formatMoney";
 
-const generateOrderId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let orderId = '';
-  for (let i = 0; i < 14; i++) {
-    orderId += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return orderId;
-};
+const PENDING_VNPAY_ORDER_KEY = "pendingVnpayOrder";
 
 function Checkout() {
   const { items } = useSelector((state) => state.cart);
@@ -127,18 +120,19 @@ function Checkout() {
       const vnp_ResponseCode = params.get("vnp_ResponseCode");
 
       if (vnp_ResponseCode && vnp_ResponseCode !== "00") {
+        sessionStorage.removeItem(PENDING_VNPAY_ORDER_KEY);
         navigate(location.pathname, { replace: true });
       } else if (vnp_ResponseCode && vnp_ResponseCode == "00") {
-        const orderData = {
-          phone: params.get("phone"),
-          address: params.get("address"),
-          coupon: params.get("coupon"),
-          ship: params.get("ship"),
-          distance: params.get("distance"),
-          timeShip: params.get("timeShip"),
-          payment: "Bank",
-        };
-        await dispatch(createOrder(orderData)).unwrap();
+        const pendingOrder = sessionStorage.getItem(PENDING_VNPAY_ORDER_KEY);
+        if (!pendingOrder) {
+          toast.error("Không tìm thấy thông tin đơn hàng VNPay");
+          navigate(location.pathname, { replace: true });
+          return;
+        }
+
+        const orderData = JSON.parse(pendingOrder);
+        await dispatch(createOrder({ ...orderData, payment: "Bank" })).unwrap();
+        sessionStorage.removeItem(PENDING_VNPAY_ORDER_KEY);
         navigate("/orderSuccess");
       }
     };
@@ -259,19 +253,23 @@ function Checkout() {
         await dispatch(createOrder(orderData)).unwrap();
         navigate("/orderSuccess");
       } else {
-        const vnpayUrl = await dispatch(createOrderVnpay(
-          {
-            amount: calculateTotal(),
-            orderId: generateOrderId(),
-            coupon: discountCode,
-            ship: phiShip,
-            distance: distanceShip,
-            timeShip: timeShip,
-            address: fullAddress,
-            phone,
-          }
-        )).unwrap();
-        window.location.href = vnpayUrl.data;
+        sessionStorage.setItem(
+          PENDING_VNPAY_ORDER_KEY,
+          JSON.stringify(orderData)
+        );
+
+        try {
+          const vnpayUrl = await dispatch(
+            createOrderVnpay({
+              amount: calculateTotal(),
+              ship: phiShip,
+            })
+          ).unwrap();
+          window.location.href = vnpayUrl.data;
+        } catch (error) {
+          sessionStorage.removeItem(PENDING_VNPAY_ORDER_KEY);
+          throw error;
+        }
       }
     } catch (error) {
       console.log(error);

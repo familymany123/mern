@@ -378,7 +378,7 @@ class OrderController {
 
   async vnpay(req, res) {
     try {
-      const { coupon, ship, distance, timeShip, address, phone } = req.body;
+      const { ship } = req.body;
       const orderAmount = Number(req.body.amount);
       const shippingFee = Number(ship || 0);
 
@@ -403,16 +403,6 @@ class OrderController {
       var tmnCode = vnp_TmnCode;
       var secretKey = vnp_HashSecret;
       const paymentEndpoint = new URL(vnp_Url);
-
-      const returnParams = new URLSearchParams({
-        coupon: coupon || "",
-        ship: String(shippingFee),
-        distance: distance || "",
-        timeShip: timeShip || "",
-        address: address || "",
-        phone: phone || "",
-      });
-      var returnUrl = `${vnp_ReturnUrl}?${returnParams.toString()}`;
 
       var date = new Date();
 
@@ -445,7 +435,7 @@ class OrderController {
       const paymentData = {
         vnp_Amount: amount,
         vnp_IpAddr: ipAddr,
-        vnp_ReturnUrl: returnUrl,
+        vnp_ReturnUrl,
         vnp_TxnRef: orderId,
         vnp_OrderInfo: "thanh toan vnpay",
         vnp_Locale: locale,
