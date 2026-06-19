@@ -425,8 +425,6 @@ class OrderController {
       var orderId = formatVnpayDate(date);
 
       var amount = Math.round(orderAmount + shippingFee);
-      var bankCode = req.body.bankCode;
-
       var locale = req.body.language;
       if (locale === null || locale === "") {
         locale = "vn";
@@ -454,10 +452,6 @@ class OrderController {
         vnp_CreateDate: createDate,
         vnp_ExpireDate,
       };
-
-      if (bankCode) {
-        paymentData.vnp_BankCode = bankCode;
-      }
 
       const vnpUrl = vnpay.buildPaymentUrl(paymentData);
 

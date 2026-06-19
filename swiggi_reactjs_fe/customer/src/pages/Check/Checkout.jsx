@@ -263,7 +263,6 @@ function Checkout() {
           {
             amount: calculateTotal(),
             orderId: generateOrderId(),
-            bankCode: selectedBank,
             coupon: discountCode,
             ship: phiShip,
             distance: distanceShip,
@@ -581,36 +580,15 @@ function Checkout() {
                     data-parent="#accordionExample"
                   >
                     <div className="border-top p-3 osahan-card-body">
-                      <h6 className="mb-3 font-weight-bold">Ngân Hàng</h6>
+                      <h6 className="mb-3 font-weight-bold">VNPay</h6>
                       <p className="m-0">
                         Hệ thống sẽ thực hiện thanh toán chính xác số tiền của đơn hàng.
                       </p>
                     </div>
                     <div className="border-top p-3 osahan-card-body">
                       <select className="form-control" value={selectedBank} onChange={handleChange}>
-                        <option value=""> Chọn Ngân Hàng</option>
-                        <option value="NCB"> Ngân Hàng NCB</option>
-                        <option value="AGRIBANK"> Ngân Hàng Agribank</option>
-                        <option value="SCB"> Ngân Hàng SCB</option>
-                        <option value="SACOMBANK">Ngân Hàng SacomBank</option>
-                        <option value="EXIMBANK"> Ngân Hàng EximBank</option>
-                        <option value="MSBANK"> Ngân Hàng MSBANK</option>
-                        <option value="NAMABANK"> Ngân Hàng NamABank</option>
-                        <option value="VNMART"> Ví Điện Tử VnMart</option>
-                        <option value="VIETINBANK">Ngân Hàng Vietinbank</option>
-                        <option value="VIETCOMBANK"> Ngân Hàng VCB</option>
-                        <option value="HDBANK">Ngân Hàng HDBank</option>
-                        <option value="DONGABANK"> Ngân Hàng Đông A</option>
-                        <option value="TPBANK"> Ngân Hàng TPBank</option>
-                        <option value="OJB"> Ngân Hàng OceanBank</option>
-                        <option value="BIDV"> Ngân Hàng BIDV</option>
-                        <option value="TECHCOMBANK"> Ngân Hàng Techcombank</option>
-                        <option value="VPBANK"> Ngân Hàng VPBank</option>
-                        <option value="MBBANK"> Ngân Hàng MBBank</option>
-                        <option value="ACB"> Ngân Hàng ACB</option>
-                        <option value="OCB"> Ngân Hàng OCB</option>
-                        <option value="IVB"> Ngân Hàng IVB</option>
-                        <option value="VISA"> Thanh toán qua VISA/MASTER</option>
+                        <option value="">Chọn phương thức</option>
+                        <option value="VNPAY">Thanh toán trên cổng VNPay</option>
                       </select>
                     </div>
                   </div>
