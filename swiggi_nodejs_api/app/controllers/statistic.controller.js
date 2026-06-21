@@ -57,6 +57,7 @@ class StatisticController {
             const monthlyOrderCount = await Order.aggregate([
                 {
                     $match: {
+                        paymentStatus: { $nin: ["Pending", "Expired"] },
                         created_at: { $gte: startOfYear, $lt: startOfNextYear }
                     }
                 },
@@ -138,15 +139,15 @@ class StatisticController {
 
             const [dailyOrders, weeklyOrders, monthlyOrders] = await Promise.all([
                 Order.aggregate([
-                    { $match: { created_at: { $gte: startOfDay } } },
+                    { $match: { paymentStatus: { $nin: ["Pending", "Expired"] }, created_at: { $gte: startOfDay } } },
                     { $count: "orderCount" }
                 ]),
                 Order.aggregate([
-                    { $match: { created_at: { $gte: startOfWeek } } },
+                    { $match: { paymentStatus: { $nin: ["Pending", "Expired"] }, created_at: { $gte: startOfWeek } } },
                     { $count: "orderCount" }
                 ]),
                 Order.aggregate([
-                    { $match: { created_at: { $gte: startOfMonth } } },
+                    { $match: { paymentStatus: { $nin: ["Pending", "Expired"] }, created_at: { $gte: startOfMonth } } },
                     { $count: "orderCount" }
                 ])
             ]);
@@ -167,6 +168,7 @@ class StatisticController {
             const range = req.query.range || "today";
             const now = new Date();
             const match = {};
+            match.paymentStatus = { $nin: ["Pending", "Expired"] };
 
             if (range === "today") {
                 match.created_at = {

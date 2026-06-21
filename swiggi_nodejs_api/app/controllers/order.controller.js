@@ -6,6 +6,31 @@ const recommenderService = require("../services/recommender.service");
 
 const VIETQR_EXPIRY_MS = 10 * 60 * 1000;
 
+async function releaseCouponReservation(order) {
+  if (!order.coupon || !order.couponReserved) return;
+
+  const claimedOrder = await Order.findOneAndUpdate(
+    { _id: order._id, couponReserved: true },
+    { $set: { couponReserved: false } }
+  );
+
+  if (!claimedOrder) return;
+
+  try {
+    await Coupon.updateOne(
+      { _id: order.coupon._id || order.coupon },
+      { $inc: { quantity: 1 }, $set: { updated_at: new Date() } }
+    );
+    order.couponReserved = false;
+  } catch (error) {
+    await Order.updateOne(
+      { _id: order._id },
+      { $set: { couponReserved: true } }
+    );
+    throw error;
+  }
+}
+
 async function expireStaleVietQrOrders() {
   await Order.updateMany(
     {
@@ -22,6 +47,16 @@ async function expireStaleVietQrOrders() {
       },
     }
   );
+
+  const expiredCouponOrders = await Order.find({
+    payment: "Bank",
+    paymentStatus: "Expired",
+    couponReserved: true,
+  });
+
+  for (const order of expiredCouponOrders) {
+    await releaseCouponReservation(order);
+  }
 }
 
 function getVietQrConfig() {
@@ -162,6 +197,9 @@ class OrderController {
 
   // [POST] /orders/
   async create(req, res) {
+    let reservedCouponId = null;
+    let createdOrderId = null;
+
     try {
       const {
         address,
@@ -187,6 +225,23 @@ class OrderController {
         return res.status(500).json({
           message: "Chưa cấu hình đầy đủ tài khoản nhận tiền VietQR",
         });
+      }
+
+      if (payment === "Bank") {
+        await expireStaleVietQrOrders();
+        const pendingPayment = await Order.exists({
+          user: req.user.userId,
+          payment: "Bank",
+          paymentStatus: "Pending",
+          status: "Pending",
+        });
+
+        if (pendingPayment) {
+          return res.status(400).json({
+            message:
+              "Bạn đang có một đơn VietQR chờ thanh toán. Vui lòng hoàn tất hoặc chờ mã hết hạn.",
+          });
+        }
       }
 
       const carts = await Cart.find({ user: req.user.userId })
@@ -233,8 +288,19 @@ class OrderController {
           totalAmount = 0;
         }
 
-        couponCheck.quantity -= 1;
-        await couponCheck.save();
+        const reservedCoupon = await Coupon.findOneAndUpdate(
+          { _id: couponCheck._id, quantity: { $gt: 0 } },
+          { $inc: { quantity: -1 }, $set: { updated_at: new Date() } },
+          { new: true }
+        );
+
+        if (!reservedCoupon) {
+          return res
+            .status(400)
+            .json({ message: "Mã giảm giá đã hết số lượng" });
+        }
+
+        reservedCouponId = couponCheck._id;
       }
 
       const order = new Order({
@@ -254,10 +320,12 @@ class OrderController {
           payment === "Bank"
             ? new Date(Date.now() + VIETQR_EXPIRY_MS)
             : null,
+        couponReserved: Boolean(couponCheck),
       });
 
       // Lưu đơn hàng
       const savedOrder = await order.save();
+      createdOrderId = savedOrder._id;
 
       // Tạo chi tiết đơn hàng từ giỏ hàng
       const detailOrders = carts.map((cartItem) => ({
@@ -290,6 +358,17 @@ class OrderController {
         paymentInfo,
       });
     } catch (error) {
+      if (reservedCouponId && !createdOrderId) {
+        try {
+          await Coupon.updateOne(
+            { _id: reservedCouponId },
+            { $inc: { quantity: 1 }, $set: { updated_at: new Date() } }
+          );
+        } catch (restoreError) {
+          console.error("Không thể hoàn lại mã giảm giá", restoreError);
+        }
+      }
+
       return res.status(500).json({
         message: "Lỗi khi tạo đơn hàng",
         error,
@@ -363,6 +442,7 @@ class OrderController {
         order.paymentStatus = "Cancelled";
       }
       const savedOrder = await order.save();
+      await releaseCouponReservation(savedOrder);
 
       const io = req.app.get("io");
       if (io) {
@@ -418,6 +498,7 @@ class OrderController {
       order.status = "Cancelled";
       order.updated_at = new Date();
       const savedOrder = await order.save();
+      await releaseCouponReservation(savedOrder);
 
       const io = req.app.get("io");
       if (io) {
@@ -464,6 +545,7 @@ class OrderController {
         order.status = "Cancelled";
         order.updated_at = new Date();
         const expiredOrder = await order.save();
+        await releaseCouponReservation(expiredOrder);
 
         const io = req.app.get("io");
         if (io) {

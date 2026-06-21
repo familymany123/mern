@@ -18,6 +18,7 @@ const orderSchema = new mongoose.Schema({
     default: 'NotRequired'
   },
   paymentExpiresAt: { type: Date, default: null },
+  couponReserved: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },  // Thời gian tạo
   updated_at: { type: Date, default: Date.now }  // Thời gian cập nhật
 });
