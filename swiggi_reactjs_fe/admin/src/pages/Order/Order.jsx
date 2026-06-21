@@ -88,19 +88,6 @@ const Order = () => {
     }
   };
 
-  const handleCompleteOrder = async (orderId) => {
-    try {
-      await dispatch(updateOrderStatus({ orderId, status: "Completed" }));
-      setOrderStatuses((prevStatuses) => {
-        const nextStatuses = { ...prevStatuses };
-        delete nextStatuses[orderId];
-        return nextStatuses;
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       dispatch(fetchOrder({ page, limit: 10 }));
@@ -236,14 +223,6 @@ const Order = () => {
                             >
                               Sửa
                             </button>
-                            {order?.status === "Processing" && (
-                              <button
-                                className="btn btn-success ml-2"
-                                onClick={() => handleCompleteOrder(order?._id)}
-                              >
-                                Hoàn thành
-                              </button>
-                            )}
                             {/* chi tiết đơn hàng */}
                             <Link
                               to={`/order/${order?._id}`}
