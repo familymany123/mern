@@ -189,7 +189,9 @@ const Order = () => {
                             >
                               <option value={order?.status}>
                             {order?.status === "Pending"
-                              ? "Đang duyệt"
+                              ? order?.payment === "Bank"
+                                ? "Chờ xác nhận chuyển khoản"
+                                : "Đang duyệt"
                               : order?.status === "Processing"
                               ? "Đang xử lý"
                               : order?.status === "Completed"
@@ -198,7 +200,11 @@ const Order = () => {
                           </option>
 
                           {order?.status === "Pending" && (
-                            <option value="Processing">Chuyển sang đang xử lý</option>
+                            <option value="Processing">
+                              {order?.payment === "Bank"
+                                ? "Xác nhận đã nhận tiền"
+                                : "Chuyển sang đang xử lý"}
+                            </option>
                           )}
 
                           {order?.status === "Processing" && (
@@ -217,7 +223,11 @@ const Order = () => {
                             {(order.ship ? order.ship : 0).toLocaleString()}đ
                           </td>
                           <td>
-                            {order.payment == "Cod" ? "Tiền Mặt" : "Chuyển Khoản"}
+                            {order.payment === "Cod"
+                              ? "Tiền mặt"
+                              : order.status === "Pending"
+                              ? "VietQR - Chờ xác nhận"
+                              : "VietQR - Đã xác nhận"}
                           </td>
                           <td>
                             <button

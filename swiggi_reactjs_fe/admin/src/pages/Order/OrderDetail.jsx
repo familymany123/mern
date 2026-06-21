@@ -33,6 +33,14 @@ const OrderDetail = () => {
     }
   };
 
+  const handleConfirmOrder = async () => {
+    if (!order?.order?._id) return;
+
+    await dispatch(
+      updateOrderStatus({ orderId: order.order._id, status: "Processing" })
+    );
+  };
+
   if (loading) {
     return <Spinner />;
   }
@@ -87,6 +95,22 @@ const OrderDetail = () => {
                       Hoàn thành đơn
                     </button>
                   )}
+                  {order?.order?.status === "Pending" && (
+                    <button
+                      className="btn btn-primary mb-3"
+                      onClick={handleConfirmOrder}
+                    >
+                      {order?.order?.payment === "Bank"
+                        ? "Xác nhận đã nhận tiền"
+                        : "Chuyển sang đang xử lý"}
+                    </button>
+                  )}
+                  <p>
+                    <strong>Thanh toán:</strong>{" "}
+                    {order?.order?.payment === "Bank"
+                      ? "Chuyển khoản VietQR"
+                      : "Tiền mặt khi nhận hàng"}
+                  </p>
                   <p>
                     <strong>Tổng tiền:</strong>{" "}
                     {formatMoney(order?.order?.amount)}

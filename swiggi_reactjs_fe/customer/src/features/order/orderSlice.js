@@ -48,19 +48,6 @@ export const createOrder = createAsyncThunk(
     }
   }
 );
-export const createOrderVnpay = createAsyncThunk(
-  "orders/createOrder",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await baseApi.post("/orders/vnpay", data);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.log(error.response.data);
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
 export const updateOrder = createAsyncThunk(
   "orders/updateOrder",
   async (data, { rejectWithValue }) => {

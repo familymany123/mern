@@ -2,24 +2,37 @@ const Order = require("../models/order.model");
 const DetailOrder = require("../models/detail_orders.model");
 const Cart = require("../models/cart.model");
 const Coupon = require("../models/coupon.model");
-const { VNPay } = require("vnpay");
-const vnpayConfig = require("../config/vnpay");
 const recommenderService = require("../services/recommender.service");
 
-function formatVnpayDate(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Ho_Chi_Minh",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).formatToParts(date);
+function getVietQrConfig() {
+  return {
+    bankId: process.env.BANK_ID?.trim(),
+    accountNo: process.env.BANK_ACCOUNT_NO?.trim(),
+    accountName: process.env.BANK_ACCOUNT_NAME?.trim(),
+    template: process.env.VIETQR_TEMPLATE?.trim() || "compact2",
+  };
+}
 
-  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return `${values.year}${values.month}${values.day}${values.hour}${values.minute}${values.second}`;
+function buildVietQrPayment(order, config) {
+  const amount = order.amount + (order.ship || 0);
+  const query = new URLSearchParams({
+    amount: String(amount),
+    addInfo: order.code,
+    accountName: config.accountName,
+  });
+  const bankId = encodeURIComponent(config.bankId);
+  const accountNo = encodeURIComponent(config.accountNo);
+  const template = encodeURIComponent(config.template);
+
+  return {
+    provider: "VietQR",
+    bankId: config.bankId,
+    accountNo: config.accountNo,
+    accountName: config.accountName,
+    amount,
+    content: order.code,
+    qrUrl: `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?${query.toString()}`,
+  };
 }
 
 async function learnRecommendationsSafely(orderId) {
@@ -137,6 +150,22 @@ class OrderController {
         payment = "Cod",
       } = req.body;
 
+      if (!["Cod", "Bank"].includes(payment)) {
+        return res.status(400).json({ message: "Phương thức thanh toán không hợp lệ" });
+      }
+
+      const vietQrConfig = payment === "Bank" ? getVietQrConfig() : null;
+      if (
+        vietQrConfig &&
+        (!vietQrConfig.bankId ||
+          !vietQrConfig.accountNo ||
+          !vietQrConfig.accountName)
+      ) {
+        return res.status(500).json({
+          message: "Chưa cấu hình đầy đủ tài khoản nhận tiền VietQR",
+        });
+      }
+
       const carts = await Cart.find({ user: req.user.userId })
         .populate("food")
         .populate("toppings");
@@ -222,9 +251,15 @@ class OrderController {
 
       learnRecommendationsSafely(savedOrder._id);
 
+      const paymentInfo =
+        payment === "Bank"
+          ? buildVietQrPayment(savedOrder, vietQrConfig)
+          : null;
+
       return res.status(201).json({
         message: "Đơn hàng đã được tạo thành công",
         order: savedOrder,
+        paymentInfo,
       });
     } catch (error) {
       return res.status(500).json({
@@ -376,86 +411,6 @@ class OrderController {
     }
   }
 
-  async vnpay(req, res) {
-    try {
-      const { ship } = req.body;
-      const orderAmount = Number(req.body.amount);
-      const shippingFee = Number(ship || 0);
-
-      if (!Number.isFinite(orderAmount) || orderAmount <= 0) {
-        return res.status(400).json({
-          code: "01",
-          message: "So tien thanh toan khong hop le",
-        });
-      }
-
-      const forwardedFor = req.headers["x-forwarded-for"];
-      var ipAddr = (
-        Array.isArray(forwardedFor)
-          ? forwardedFor[0]
-          : forwardedFor?.split(",")[0]
-      ) || req.socket.remoteAddress || req.connection.remoteAddress;
-      ipAddr = String(ipAddr || "").replace(/^::ffff:/, "").trim();
-
-      const { vnp_TmnCode, vnp_HashSecret, vnp_Url, vnp_ReturnUrl } =
-        vnpayConfig;
-
-      var tmnCode = vnp_TmnCode;
-      var secretKey = vnp_HashSecret;
-      const paymentEndpoint = new URL(vnp_Url);
-
-      var date = new Date();
-
-      var createDate = Number(formatVnpayDate(date));
-
-      var expireDate = new Date(date);
-      expireDate.setMinutes(expireDate.getMinutes() + 15);
-
-      var vnp_ExpireDate = Number(formatVnpayDate(expireDate));
-      var orderId = formatVnpayDate(date);
-
-      var amount = Math.round(orderAmount + shippingFee);
-      const locale = req.body.language === "en" ? "en" : "vn";
-
-      const vnpay = new VNPay({
-        tmnCode,
-        secureSecret: secretKey,
-        vnpayHost: paymentEndpoint.origin,
-        testMode: paymentEndpoint.hostname === "sandbox.vnpayment.vn",
-        hashAlgorithm: "SHA512",
-        enableLog: false,
-        endpoints: {
-          paymentEndpoint: paymentEndpoint.pathname.replace(/^\/+/, ""),
-        },
-      });
-
-      const paymentData = {
-        vnp_Amount: amount,
-        vnp_IpAddr: ipAddr,
-        vnp_ReturnUrl,
-        vnp_TxnRef: orderId,
-        vnp_OrderInfo: "thanh toan vnpay",
-        vnp_Locale: locale,
-        vnp_CreateDate: createDate,
-        vnp_ExpireDate,
-      };
-
-      const vnpUrl = vnpay.buildPaymentUrl(paymentData);
-
-      return res.status(200).json({
-        code: "00",
-        message: "Success",
-        data: vnpUrl,
-      });
-    } catch (error) {
-      console.error("VNPay Error:", error);
-
-      return res.status(500).json({
-        code: "99",
-        message: "Internal Server Error",
-      });
-    }
-  }
 }
 
 module.exports = new OrderController();

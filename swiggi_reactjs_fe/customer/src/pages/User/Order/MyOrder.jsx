@@ -59,7 +59,9 @@ const MyOrder = () => {
                   : order.status === "Processing"
                   ? "Đang xử lý"
                   : order.status === "Pending"
-                  ? "Chờ xử lý"
+                  ? order.payment === "Bank"
+                    ? "Chờ xác nhận chuyển khoản"
+                    : "Chờ xử lý"
                   : "Đã hủy"}
               </p>
               <p className="small font-weight-bold text-center">

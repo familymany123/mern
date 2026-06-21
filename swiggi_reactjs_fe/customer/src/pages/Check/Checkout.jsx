@@ -5,7 +5,7 @@ import { CiDollar } from "react-icons/ci";
 import { FaBars, FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import { FaAnglesDown, FaPercent } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import baseApi from "../../api/baseApi";
 import { SidebarContext } from "../../context/SidebarContext";
 import {
@@ -16,10 +16,10 @@ import {
   updateCartItem,
 } from "../../features/cart/cartSlice";
 import { fetchCoupons } from "../../features/coupons/couponSlice";
-import { createOrder, createOrderVnpay } from "../../features/order/orderSlice";
+import { createOrder } from "../../features/order/orderSlice";
 import { formatMoney } from "../../utils/formatMoney";
 
-const PENDING_VNPAY_ORDER_KEY = "pendingVnpayOrder";
+const LAST_VIETQR_ORDER_KEY = "lastVietQrOrder";
 
 function Checkout() {
   const { items } = useSelector((state) => state.cart);
@@ -40,9 +40,8 @@ function Checkout() {
   const [phiShip, setPhiShip] = useState(0);
   const [shippingAddress, setShippingAddress] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [selectedBank, setSelectedBank] = useState('');
+  const [selectedPayment, setSelectedPayment] = useState("");
   const [recommendations, setRecommendations] = useState([]);
-  const location = useLocation();
   const navigate = useNavigate();
   const { toggleSidebar } = useContext(SidebarContext);
   useEffect(() => {
@@ -115,29 +114,6 @@ function Checkout() {
     };
     checkAuth();
 
-    const checkAndRemoveQuery = async () => {
-      const params = new URLSearchParams(location.search);
-      const vnp_ResponseCode = params.get("vnp_ResponseCode");
-
-      if (vnp_ResponseCode && vnp_ResponseCode !== "00") {
-        sessionStorage.removeItem(PENDING_VNPAY_ORDER_KEY);
-        navigate(location.pathname, { replace: true });
-      } else if (vnp_ResponseCode && vnp_ResponseCode == "00") {
-        const pendingOrder = sessionStorage.getItem(PENDING_VNPAY_ORDER_KEY);
-        if (!pendingOrder) {
-          toast.error("Không tìm thấy thông tin đơn hàng VNPay");
-          navigate(location.pathname, { replace: true });
-          return;
-        }
-
-        const orderData = JSON.parse(pendingOrder);
-        await dispatch(createOrder({ ...orderData, payment: "Bank" })).unwrap();
-        sessionStorage.removeItem(PENDING_VNPAY_ORDER_KEY);
-        navigate("/orderSuccess");
-      }
-    };
-
-    checkAndRemoveQuery();
   }, []);
   const handleUpdateQuantity = (id, quantity) => {
     if (quantity > 0) {
@@ -201,8 +177,8 @@ function Checkout() {
   };
 
 
-  const handleChange = (event) => {
-    setSelectedBank(event.target.value);
+  const handlePaymentChange = (event) => {
+    setSelectedPayment(event.target.value);
   };
 
   const handleCheckout = async () => {
@@ -249,27 +225,19 @@ function Checkout() {
         timeShip: timeShip,
       };
 
-      if (selectedBank == "" || !selectedBank) {
-        await dispatch(createOrder(orderData)).unwrap();
-        navigate("/orderSuccess");
+      if (!selectedPayment) {
+        const response = await dispatch(createOrder(orderData)).unwrap();
+        sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
+        navigate("/orderSuccess", { state: response });
       } else {
+        const response = await dispatch(
+          createOrder({ ...orderData, payment: "Bank" })
+        ).unwrap();
         sessionStorage.setItem(
-          PENDING_VNPAY_ORDER_KEY,
-          JSON.stringify(orderData)
+          LAST_VIETQR_ORDER_KEY,
+          JSON.stringify(response)
         );
-
-        try {
-          const vnpayUrl = await dispatch(
-            createOrderVnpay({
-              amount: calculateTotal(),
-              ship: phiShip,
-            })
-          ).unwrap();
-          window.location.href = vnpayUrl.data;
-        } catch (error) {
-          sessionStorage.removeItem(PENDING_VNPAY_ORDER_KEY);
-          throw error;
-        }
+        navigate("/orderSuccess", { state: response });
       }
     } catch (error) {
       console.log(error);
@@ -578,15 +546,19 @@ function Checkout() {
                     data-parent="#accordionExample"
                   >
                     <div className="border-top p-3 osahan-card-body">
-                      <h6 className="mb-3 font-weight-bold">VNPay</h6>
+                      <h6 className="mb-3 font-weight-bold">VietQR</h6>
                       <p className="m-0">
                         Hệ thống sẽ thực hiện thanh toán chính xác số tiền của đơn hàng.
                       </p>
                     </div>
                     <div className="border-top p-3 osahan-card-body">
-                      <select className="form-control" value={selectedBank} onChange={handleChange}>
+                      <select
+                        className="form-control"
+                        value={selectedPayment}
+                        onChange={handlePaymentChange}
+                      >
                         <option value="">Chọn phương thức</option>
-                        <option value="VNPAY">Thanh toán trên cổng VNPay</option>
+                        <option value="VIETQR">Chuyển khoản bằng VietQR</option>
                       </select>
                     </div>
                   </div>

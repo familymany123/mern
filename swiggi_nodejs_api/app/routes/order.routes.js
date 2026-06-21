@@ -8,7 +8,6 @@ router.patch('/:id/status', authenticateToken, requireAdmin, orderController.sta
 router.patch('/:id/delivered', authenticateToken, orderController.delivered);
 router.get('/:id', authenticateToken, orderController.show);
 router.post('/', authenticateToken, requireCustomer, orderController.create);
-router.post('/vnpay', authenticateToken, requireCustomer, orderController.vnpay);
 router.get('/', authenticateToken, orderController.index);
 
 
