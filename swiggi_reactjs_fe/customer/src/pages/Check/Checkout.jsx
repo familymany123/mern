@@ -7,6 +7,7 @@ import { FaAnglesDown, FaPercent } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import baseApi from "../../api/baseApi";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import { SidebarContext } from "../../context/SidebarContext";
 import {
   addItemToCart,
@@ -39,7 +40,9 @@ function Checkout() {
   const [timeShip, setTimeShip] = useState("0 phút");
   const [phiShip, setPhiShip] = useState(0);
   const [shippingAddress, setShippingAddress] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authStatus, setAuthStatus] = useState(() =>
+    localStorage.getItem("accessToken") ? "checking" : "unauthenticated"
+  );
   const [selectedPayment, setSelectedPayment] = useState("");
   const [recommendations, setRecommendations] = useState([]);
   const navigate = useNavigate();
@@ -96,20 +99,20 @@ function Checkout() {
     const checkAuth = async () => {
       if (!localStorage.getItem("accessToken")) {
         dispatch(clearCart());
-        setIsAuthenticated(false);
+        setAuthStatus("unauthenticated");
         return;
       }
 
       try {
         const response = await baseApi.get("/users/profile");
         if (response.data?._id) {
-          setIsAuthenticated(true);
+          setAuthStatus("authenticated");
         } else {
-          setIsAuthenticated(false);
+          setAuthStatus("unauthenticated");
         }
       } catch (error) {
         console.log(error);
-        setIsAuthenticated(false);
+        setAuthStatus("unauthenticated");
       }
     };
     checkAuth();
@@ -351,7 +354,18 @@ function Checkout() {
 
     return () => clearTimeout(timer);
   }, [homeAddress, selectedWard, selectedDistrict, wards, districts]);
-  if (!isAuthenticated) {
+  if (authStatus === "checking") {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "70vh" }}
+      >
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (authStatus === "unauthenticated") {
     return (
       <div
         className=""
