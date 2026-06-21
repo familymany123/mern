@@ -62,6 +62,8 @@ const MyOrder = () => {
                   ? order.payment === "Bank"
                     ? "Chờ xác nhận chuyển khoản"
                     : "Chờ xử lý"
+                  : order.paymentStatus === "Expired"
+                  ? "Thanh toán hết hạn"
                   : "Đã hủy"}
               </p>
               <p className="small font-weight-bold text-center">

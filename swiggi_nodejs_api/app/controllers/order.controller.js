@@ -4,6 +4,26 @@ const Cart = require("../models/cart.model");
 const Coupon = require("../models/coupon.model");
 const recommenderService = require("../services/recommender.service");
 
+const VIETQR_EXPIRY_MS = 10 * 60 * 1000;
+
+async function expireStaleVietQrOrders() {
+  await Order.updateMany(
+    {
+      payment: "Bank",
+      paymentStatus: "Pending",
+      status: "Pending",
+      paymentExpiresAt: { $lte: new Date() },
+    },
+    {
+      $set: {
+        paymentStatus: "Expired",
+        status: "Cancelled",
+        updated_at: new Date(),
+      },
+    }
+  );
+}
+
 function getVietQrConfig() {
   return {
     bankId: process.env.BANK_ID?.trim(),
@@ -31,6 +51,7 @@ function buildVietQrPayment(order, config) {
     accountName: config.accountName,
     amount,
     content: order.code,
+    expiresAt: order.paymentExpiresAt,
     qrUrl: `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?${query.toString()}`,
   };
 }
@@ -47,6 +68,8 @@ class OrderController {
   // [GET] /orders
   async index(req, res) {
     try {
+      await expireStaleVietQrOrders();
+
       const { page = 1, limit = 10, search = "" } = req.query;
       const query = {};
 
@@ -226,6 +249,11 @@ class OrderController {
         distance,
         timeShip,
         payment,
+        paymentStatus: payment === "Bank" ? "Pending" : "NotRequired",
+        paymentExpiresAt:
+          payment === "Bank"
+            ? new Date(Date.now() + VIETQR_EXPIRY_MS)
+            : null,
       });
 
       // Lưu đơn hàng
@@ -272,6 +300,8 @@ class OrderController {
   // [GET] /orders/:id
   async show(req, res) {
     try {
+      await expireStaleVietQrOrders();
+
       const { id } = req.params;
 
       const order = await Order.findById(id);
@@ -329,6 +359,9 @@ class OrderController {
       }
 
       order.status = "Cancelled";
+      if (order.payment === "Bank" && order.paymentStatus === "Pending") {
+        order.paymentStatus = "Cancelled";
+      }
       const savedOrder = await order.save();
 
       const io = req.app.get("io");
@@ -343,6 +376,61 @@ class OrderController {
     } catch (error) {
       return res.status(500).json({
         message: "Lỗi khi hủy đơn hàng",
+        error,
+      });
+    }
+  }
+
+  // [PATCH] /orders/:id/expire-payment
+  async expirePayment(req, res) {
+    try {
+      const order = await Order.findById(req.params.id);
+
+      if (!order) {
+        return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      }
+
+      if (
+        order.user.toString() !== req.user.userId &&
+        req.user.role !== "admin"
+      ) {
+        return res.status(403).json({
+          message: "Bạn không có quyền cập nhật đơn hàng này",
+        });
+      }
+
+      if (
+        order.payment !== "Bank" ||
+        order.paymentStatus !== "Pending" ||
+        order.status !== "Pending"
+      ) {
+        return res.json({ order });
+      }
+
+      if (
+        order.paymentExpiresAt &&
+        order.paymentExpiresAt.getTime() > Date.now()
+      ) {
+        return res.status(400).json({ message: "Thanh toán chưa hết hạn" });
+      }
+
+      order.paymentStatus = "Expired";
+      order.status = "Cancelled";
+      order.updated_at = new Date();
+      const savedOrder = await order.save();
+
+      const io = req.app.get("io");
+      if (io) {
+        io.emit("orderStatusUpdated", savedOrder);
+      }
+
+      return res.json({
+        message: "Thanh toán VietQR đã hết hạn",
+        order: savedOrder,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Lỗi khi cập nhật hạn thanh toán",
         error,
       });
     }
@@ -364,6 +452,28 @@ class OrderController {
 
       if (!order) {
         return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      }
+
+      if (
+        order.payment === "Bank" &&
+        order.paymentStatus === "Pending" &&
+        order.paymentExpiresAt &&
+        order.paymentExpiresAt.getTime() <= Date.now()
+      ) {
+        order.paymentStatus = "Expired";
+        order.status = "Cancelled";
+        order.updated_at = new Date();
+        const expiredOrder = await order.save();
+
+        const io = req.app.get("io");
+        if (io) {
+          io.emit("orderStatusUpdated", expiredOrder);
+        }
+
+        return res.status(400).json({
+          message: "Thanh toán VietQR đã hết hạn",
+          order: expiredOrder,
+        });
       }
 
       if (order.status === "Cancelled") {
@@ -390,6 +500,14 @@ class OrderController {
       }
 
       order.status = status;
+      if (
+        status === "Processing" &&
+        order.payment === "Bank" &&
+        order.paymentStatus === "Pending"
+      ) {
+        order.paymentStatus = "Paid";
+      }
+      order.updated_at = new Date();
       const savedOrder = await order.save();
 
       const io = req.app.get("io");

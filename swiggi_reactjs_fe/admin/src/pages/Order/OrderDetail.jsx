@@ -83,7 +83,9 @@ const OrderDetail = () => {
                     )}
                     {order?.order?.status === "Cancelled" && (
                       <span className="badge badge-danger">
-                        {order?.order?.status}
+                        {order?.order?.paymentStatus === "Expired"
+                          ? "Hết hạn thanh toán"
+                          : order?.order?.status}
                       </span>
                     )}
                   </p>
@@ -108,7 +110,11 @@ const OrderDetail = () => {
                   <p>
                     <strong>Thanh toán:</strong>{" "}
                     {order?.order?.payment === "Bank"
-                      ? "Chuyển khoản VietQR"
+                      ? order?.order?.paymentStatus === "Paid"
+                        ? "VietQR - Đã xác nhận"
+                        : order?.order?.paymentStatus === "Expired"
+                        ? "VietQR - Hết hạn"
+                        : "VietQR - Chờ xác nhận"
                       : "Tiền mặt khi nhận hàng"}
                   </p>
                   <p>

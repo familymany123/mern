@@ -12,6 +12,12 @@ const orderSchema = new mongoose.Schema({
   distance: { type: String, required: true },  // Quãng đường ship (KM)
   timeShip: { type: String, required: true },  // Thời gian ship (KM)
   payment: { type: String, enum: ['Cod', 'Bank'], default: 'Cod' }, // Phương thức thanh toán
+  paymentStatus: {
+    type: String,
+    enum: ['NotRequired', 'Pending', 'Paid', 'Expired', 'Cancelled'],
+    default: 'NotRequired'
+  },
+  paymentExpiresAt: { type: Date, default: null },
   created_at: { type: Date, default: Date.now },  // Thời gian tạo
   updated_at: { type: Date, default: Date.now }  // Thời gian cập nhật
 });

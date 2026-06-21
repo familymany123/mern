@@ -183,6 +183,8 @@ const Order = () => {
                               ? "Đang xử lý"
                               : order?.status === "Completed"
                               ? "Hoàn thành"
+                              : order?.paymentStatus === "Expired"
+                              ? "Hết hạn thanh toán"
                               : "Đã hủy"}
                           </option>
 
@@ -212,9 +214,13 @@ const Order = () => {
                           <td>
                             {order.payment === "Cod"
                               ? "Tiền mặt"
-                              : order.status === "Pending"
+                              : order.paymentStatus === "Pending"
                               ? "VietQR - Chờ xác nhận"
-                              : "VietQR - Đã xác nhận"}
+                              : order.paymentStatus === "Paid"
+                              ? "VietQR - Đã xác nhận"
+                              : order.paymentStatus === "Expired"
+                              ? "VietQR - Hết hạn"
+                              : "VietQR - Đã hủy"}
                           </td>
                           <td>
                             <button

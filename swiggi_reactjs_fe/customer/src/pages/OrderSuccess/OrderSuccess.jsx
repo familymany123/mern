@@ -1,33 +1,115 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import baseApi from "../../api/baseApi";
 import { clearCart } from "../../features/cart/cartSlice";
 import { resetOrder } from "../../features/order/orderSlice";
 import { formatMoney } from "../../utils/formatMoney";
 
 const LAST_VIETQR_ORDER_KEY = "lastVietQrOrder";
 
+function readStoredResult() {
+  try {
+    return JSON.parse(sessionStorage.getItem(LAST_VIETQR_ORDER_KEY));
+  } catch {
+    sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
+    return null;
+  }
+}
+
+function secondsUntil(expiresAt) {
+  if (!expiresAt) return 0;
+  return Math.max(
+    0,
+    Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 1000)
+  );
+}
+
+function formatCountdown(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(
+    remainingSeconds
+  ).padStart(2, "0")}`;
+}
+
 function OrderSuccess() {
   const dispatch = useDispatch();
   const location = useLocation();
-  let storedResult = null;
-
-  try {
-    storedResult = JSON.parse(
-      sessionStorage.getItem(LAST_VIETQR_ORDER_KEY)
-    );
-  } catch {
-    sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
-  }
-
-  const result = location.state || storedResult;
+  const navigate = useNavigate();
+  const [result] = useState(() => location.state || readStoredResult());
   const order = result?.order;
   const paymentInfo = result?.paymentInfo;
+  const [remainingSeconds, setRemainingSeconds] = useState(() =>
+    secondsUntil(paymentInfo?.expiresAt)
+  );
+  const [isExpired, setIsExpired] = useState(
+    Boolean(paymentInfo?.expiresAt) && secondsUntil(paymentInfo.expiresAt) === 0
+  );
+  const expiryRequestSent = useRef(false);
 
   useEffect(() => {
     dispatch(resetOrder());
     dispatch(clearCart());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!order?._id || !paymentInfo) return undefined;
+
+    const checkOrder = async () => {
+      try {
+        const response = await baseApi.get(`/orders/${order._id}`);
+        const updatedOrder = response.data.order;
+
+        if (
+          updatedOrder.paymentStatus === "Paid" ||
+          updatedOrder.status === "Processing" ||
+          updatedOrder.status === "Completed"
+        ) {
+          sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
+          navigate("/my_order", { replace: true });
+        } else if (
+          updatedOrder.paymentStatus === "Expired" ||
+          updatedOrder.status === "Cancelled"
+        ) {
+          setIsExpired(true);
+          setRemainingSeconds(0);
+          sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
+        }
+      } catch (error) {
+        console.error("Không thể kiểm tra trạng thái thanh toán", error);
+      }
+    };
+
+    checkOrder();
+    const pollingId = window.setInterval(checkOrder, 3000);
+    return () => window.clearInterval(pollingId);
+  }, [navigate, order?._id, paymentInfo]);
+
+  useEffect(() => {
+    if (!order?._id || !paymentInfo?.expiresAt || isExpired) return undefined;
+
+    const updateCountdown = async () => {
+      const seconds = secondsUntil(paymentInfo.expiresAt);
+      setRemainingSeconds(seconds);
+
+      if (seconds === 0 && !expiryRequestSent.current) {
+        expiryRequestSent.current = true;
+        setIsExpired(true);
+        sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
+
+        try {
+          await baseApi.patch(`/orders/${order._id}/expire-payment`);
+        } catch (error) {
+          console.error("Không thể cập nhật hạn thanh toán", error);
+        }
+      }
+    };
+
+    updateCountdown();
+    const timerId = window.setInterval(updateCountdown, 1000);
+    return () => window.clearInterval(timerId);
+  }, [isExpired, order?._id, paymentInfo?.expiresAt]);
 
   return (
     <div className="py-5 osahan-coming-soon">
@@ -35,7 +117,9 @@ function OrderSuccess() {
         <div className="mx-auto" style={{ maxWidth: "620px" }}>
           <div className="text-center pb-3">
             <h2 className="font-weight-bold">
-              {paymentInfo
+              {isExpired
+                ? "Mã VietQR đã hết hạn"
+                : paymentInfo
                 ? "Quét mã VietQR để chuyển khoản"
                 : "Đơn hàng đã được tiếp nhận"}
             </h2>
@@ -45,9 +129,13 @@ function OrderSuccess() {
           </div>
 
           <div className="bg-white rounded p-4 shadow-sm">
-            {paymentInfo ? (
+            {paymentInfo && !isExpired ? (
               <>
                 <div className="text-center">
+                  <p className="mb-2">Thời gian thanh toán còn lại</p>
+                  <h3 className="font-weight-bold text-danger mb-3">
+                    {formatCountdown(remainingSeconds)}
+                  </h3>
                   <img
                     src={paymentInfo.qrUrl}
                     alt="Mã VietQR thanh toán đơn hàng"
@@ -79,11 +167,20 @@ function OrderSuccess() {
                     <strong>{paymentInfo.content}</strong>
                   </p>
                   <p className="small text-danger text-center mb-0">
-                    Vui lòng chuyển đúng số tiền và nội dung. Đơn hàng sẽ được
-                    xử lý sau khi admin xác nhận giao dịch.
+                    Vui lòng chuyển đúng số tiền và nội dung. Trang sẽ tự chuyển
+                    sang đơn hàng của bạn sau khi cửa hàng xác nhận giao dịch.
                   </p>
                 </div>
               </>
+            ) : paymentInfo ? (
+              <div className="text-center py-4">
+                <h5 className="font-weight-bold text-danger">
+                  Đã quá 10 phút thanh toán
+                </h5>
+                <p className="text-muted mb-0">
+                  Mã QR không còn hiệu lực và đơn hàng đã được hủy.
+                </p>
+              </div>
             ) : (
               <div className="text-center">
                 <h1 className="display-1 mb-4">✓</h1>
