@@ -1,5 +1,4 @@
-﻿import axios from "axios";
-import { Fragment, useContext, useEffect, useState } from "react";
+﻿import { Fragment, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CiDollar } from "react-icons/ci";
 import { FaBars, FaMinus, FaPlus, FaTrash } from "react-icons/fa";
@@ -214,9 +213,9 @@ function Checkout() {
         shippingAddress ||
         homeAddress +
           ", " +
-          wards.find((ward) => ward.code == selectedWard)?.name +
+          wards.find((ward) => ward.WardCode == selectedWard)?.WardName +
           ", " +
-          districts.find((district) => district.code == selectedDistrict)?.name +
+          districts.find((district) => district.DistrictID == selectedDistrict)?.DistrictName +
           ", TP. Hồ Chí Minh, Việt Nam";
 
       const orderData = {
@@ -252,19 +251,10 @@ function Checkout() {
   useEffect(() => {
     const fetchDeliveryAreas = async () => {
       try {
-        const areaResponse = await baseApi.get("/shipping/areas");
-        const provinceCode = areaResponse.data.provinceCode || 79;
-        const deliveryAreaCodes = areaResponse.data.deliveryAreaCodes || [];
+        await baseApi.get("/shipping/areas");
+        const response = await baseApi.get("/shipping/districts");
 
-        const response = await axios.get(
-          `https://provinces.open-api.vn/api/v1/p/${provinceCode}?depth=2`
-        );
-        const allDistricts = response.data.districts || [];
-        const filteredDistricts = allDistricts.filter((item) =>
-          deliveryAreaCodes.includes(Number(item.code))
-        );
-
-        setDistricts(filteredDistricts);
+        setDistricts(response.data.districts || []);
         setSelectedDistrict("");
         setSelectedWard("");
         setWards([]);
@@ -285,8 +275,8 @@ function Checkout() {
     setShippingAddress("");
 
     if (selectedDistrict) {
-      axios
-        .get(`https://provinces.open-api.vn/api/v1/d/${selectedDistrict}?depth=2`)
+      baseApi
+        .get(`/shipping/wards/${selectedDistrict}`)
         .then((response) => {
           setWards(response.data.wards || []);
           setSelectedWard("");
@@ -306,8 +296,8 @@ function Checkout() {
     }
   }, [user]);
   const calculateShippingFee = async (wardCode = selectedWard, address = homeAddress) => {
-    const ward = wards.find((item) => item.code == wardCode);
-    const district = districts.find((item) => item.code == selectedDistrict);
+    const ward = wards.find((item) => item.WardCode == wardCode);
+    const district = districts.find((item) => item.DistrictID == selectedDistrict);
 
     if (!ward || !district || !address.trim()) {
       setDistanceShip("0 km");
@@ -319,16 +309,17 @@ function Checkout() {
 
     try {
       const response = await baseApi.post("/shipping/calculate", {
-        districtCode: district.code,
-        districtName: district.name,
-        wardCode: ward.code,
-        wardName: ward.name,
+        districtCode: district.DistrictID,
+        districtName: district.DistrictName,
+        wardCode: ward.WardCode,
+        wardName: ward.WardName,
         homeAddress: address.trim(),
+        orderValue: calculateTotal(),
       });
 
       const { distanceKm, durationMinute, fee, address: fullAddress } = response.data;
-      setDistanceShip(`${Number(distanceKm).toFixed(2)} km`);
-      setTimeShip(`${durationMinute} phút`);
+      setDistanceShip(distanceKm ? `${Number(distanceKm).toFixed(2)} km` : "GHN");
+      setTimeShip(typeof durationMinute === "number" ? `${durationMinute} phút` : durationMinute);
       setPhiShip(fee);
       setShippingAddress(fullAddress);
     } catch {
@@ -425,10 +416,10 @@ function Checkout() {
                           <option value="">Chọn quận</option>
                           {districts.map((district) => (
                             <option
-                              key={district.code}
-                              value={district.code}
+                              key={district.DistrictID}
+                              value={district.DistrictID}
                             >
-                              {district.name}
+                              {district.DistrictName}
                             </option>
                           ))}
                         </select>
@@ -444,8 +435,8 @@ function Checkout() {
                         >
                           <option value="">Chọn phường</option>
                           {wards.map((ward) => (
-                            <option key={ward.code} value={ward.code}>
-                              {ward.name}
+                            <option key={ward.WardCode} value={ward.WardCode}>
+                              {ward.WardName}
                             </option>
                           ))}
                         </select>
