@@ -322,7 +322,11 @@ function Checkout() {
       setTimeShip(typeof durationMinute === "number" ? `${durationMinute} phút` : durationMinute);
       setPhiShip(fee);
       setShippingAddress(fullAddress);
-    } catch {
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+          "Không thể tính phí giao hàng cho địa chỉ này"
+      );
       setDistanceShip("0 km");
       setTimeShip("0 phút");
       setPhiShip(0);
