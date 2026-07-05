@@ -15,12 +15,43 @@ const Navbar = () => {
     toast.success("Logout Successfully");
     navigate("/login");
   };
-  console.log(auth.user)
+
+  const toggleSidebar = (event) => {
+    event.preventDefault();
+
+    if (window.innerWidth <= 992) {
+      document.body.classList.toggle("sidebar-open");
+      return;
+    }
+
+    document.body.classList.toggle("sidebar-collapse");
+  };
+
+  const toggleFullscreen = async (event) => {
+    event.preventDefault();
+
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error("Unable to toggle fullscreen", error);
+    }
+  };
+
   return (
     <nav className="main-header navbar navbar-expand navbar-white navbar-light">
       <ul className="navbar-nav">
         <li className="nav-item">
-          <a className="nav-link" data-widget="pushmenu" href="#" role="button">
+          <a
+            aria-label="Thu gọn menu"
+            className="nav-link"
+            href="#"
+            onClick={toggleSidebar}
+            role="button"
+          >
             <i className="fas fa-bars"></i>
           </a>
         </li>
@@ -49,8 +80,8 @@ const Navbar = () => {
         <li className="nav-item">
           <a
             className="nav-link"
-            data-widget="fullscreen"
             href="#"
+            onClick={toggleFullscreen}
             role="button"
           >
             <i className="fas fa-expand-arrows-alt"></i>
