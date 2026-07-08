@@ -8,8 +8,6 @@ const authRoute = require("./auth.routes.js")
 const configRoute = require("./config.routes.js")
 const bannerRoute = require("./banner.routes.js")
 const contactRoute = require("./contact.routes.js")
-const provinceRoute = require("./province.routes.js")
-const districtRoute = require("./district.routes.js")
 const cartRoute = require("./cart.routes.js")
 const orderRoute = require("./order.routes.js")
 const statisticRoute = require("./statistic.routes.js")
@@ -29,8 +27,6 @@ function route(app){
     app.use("/configs", configRoute);
     app.use("/banners", bannerRoute);
     app.use("/contacts", contactRoute);
-    app.use("/provinces", provinceRoute);
-    app.use("/districts", districtRoute);
     app.use("/carts", cartRoute);
     app.use("/orders", orderRoute);
     app.use("/statistics", statisticRoute);

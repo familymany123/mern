@@ -7,7 +7,6 @@ import Category from "./Category/Category";
 import Contact from "./Contact/Contact";
 import AddCoupon from "./Coupons/AddCoupon";
 import Coupons from "./Coupons/Coupons";
-import Districts from "./Districts/Districts";
 import NotFound from "./Error/NotFound";
 import AddFood from "./Foods/AddFood";
 import Foods from "./Foods/Foods";
@@ -15,7 +14,6 @@ import FoodTopping from "./FoodTopping/FoodTopping";
 import Home from "./Home/Home";
 import Order from "./Order/Order";
 import OrderDetail from "./Order/OrderDetail";
-import Provinces from "./Provinces/Provinces";
 import Setting from "./Setting/Setting";
 import AddTopping from "./Topping/AddTopping";
 import Topping from "./Topping/Topping";
@@ -32,14 +30,12 @@ export {
     Category,
     Contact,
     Coupons,
-    Districts,
     FoodTopping,
     Foods,
     Home,
     Login,
     NotFound,
     Order, OrderDetail,
-    Provinces,
     Register,
     Setting,
     Topping,

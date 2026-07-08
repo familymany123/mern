@@ -5,10 +5,8 @@ import bannerReducer from "../features/banner/bannerSlice";
 import categoryReducer from "../features/category/categorySlice";
 import contactReducer from "../features/contact/contactSlice";
 import couponReducer from "../features/coupons/couponSlice";
-import districtReducer from "../features/district/districtSlice";
 import foodReducer from "../features/foods/foodSlice";
 import orderReducer from '../features/order/orderSlice';
-import provinceReducer from "../features/provinces/provinceSlice";
 import settingReducer from "../features/setting/settingSlice";
 import currentOrderReducer from "../features/statistic/currentOrderSlice";
 import currentRevenueReducer from "../features/statistic/currentRevenueSlice";
@@ -27,8 +25,6 @@ export const store = configureStore({
     contacts: contactReducer,
     settings: settingReducer,
     banners: bannerReducer,
-    provinces: provinceReducer,
-    districts: districtReducer,
     orders:orderReducer,
     monthlyRevenue: monthlyRevenueReducer,
     monthlyOrder: monthlyOrderReducer,

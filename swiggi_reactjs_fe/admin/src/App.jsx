@@ -12,7 +12,6 @@ import {
   Category,
   Contact,
   Coupons,
-  Districts,
   Foods,
   FoodTopping,
   Home,
@@ -20,7 +19,6 @@ import {
   NotFound,
   Order,
   OrderDetail,
-  Provinces,
   Register,
   Setting,
   Topping,
@@ -53,8 +51,6 @@ function App() {
               <Route path="/banner/add" element={<AddBanner />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/setting" element={<Setting />} />
-              <Route path="/provinces" element={<Provinces />} />
-              <Route path="/districts" element={<Districts />} />
               <Route path="/orders" element={<Order />} />
               <Route path="/order/:id" element={<OrderDetail />} />
             </Route>

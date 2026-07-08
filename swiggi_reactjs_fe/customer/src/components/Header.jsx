@@ -9,7 +9,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { SidebarContext } from "../context/SidebarContext";
 import { logout } from "../features/auth/authSlice";
 import { clearCart } from "../features/cart/cartSlice";
-import { fetchProvinces } from "../features/provinces/provinceSlice";
 import { logout as logoutUser, userProfile } from "../features/user/userSlice";
 
 const Header = () => {
@@ -32,9 +31,6 @@ const Header = () => {
     navigate("/");
   };
 
-  useEffect(() => {
-    dispatch(fetchProvinces(1, 10));
-  }, [dispatch]);
   return (
     <>
       <header className="section-header  ">
