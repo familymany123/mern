@@ -74,7 +74,7 @@ function Checkout() {
       try {
         const response = await baseApi.post("/recommendations", {
           foodIds,
-          limit: 4,
+          limit: 5,
         });
         setRecommendations(response.data.recommendations || []);
       } catch {

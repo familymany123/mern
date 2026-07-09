@@ -3,7 +3,7 @@ const recommenderService = require("../services/recommender.service");
 class RecommendationController {
   async index(req, res) {
     try {
-      const { foodIds = [], limit = 4 } = req.body;
+      const { foodIds = [], limit = 5 } = req.body;
 
       if (!Array.isArray(foodIds) || !foodIds.length) {
         return res.json({ recommendations: [] });
@@ -11,7 +11,7 @@ class RecommendationController {
 
       const recommendations = await recommenderService.getRecommendations(
         foodIds,
-        Math.min(Number(limit) || 4, 8)
+        Math.min(Math.max(Number(limit) || 5, 1), 8)
       );
 
       return res.json({ recommendations });
