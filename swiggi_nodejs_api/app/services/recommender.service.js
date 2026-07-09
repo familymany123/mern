@@ -103,6 +103,25 @@ const getUniqueFoodIds = (details) => {
   return Array.from(ids);
 };
 
+const buildRecommendationItem = (targetId, sourceOrderCount, boughtTogether) => {
+  const confidence = sourceOrderCount ? boughtTogether / sourceOrderCount : 0;
+
+  return {
+    food: new mongoose.Types.ObjectId(targetId),
+    score: Number((confidence * Math.log1p(boughtTogether)).toFixed(6)),
+    boughtTogether,
+    confidence: Number(confidence.toFixed(6)),
+  };
+};
+
+const buildRecommendationItems = (sourceOrderCount, targetCounts) =>
+  Array.from(targetCounts.entries())
+    .map(([targetId, boughtTogether]) =>
+      buildRecommendationItem(targetId, sourceOrderCount, boughtTogether)
+    )
+    .sort((a, b) => b.score - a.score || b.boughtTogether - a.boughtTogether)
+    .slice(0, MAX_RECOMMENDATIONS_PER_FOOD);
+
 const addPair = (statsByFood, sourceId, targetId) => {
   if (sourceId === targetId) return;
 
@@ -121,21 +140,10 @@ const buildDocumentsFromStats = (statsByFood) => {
   const docs = [];
 
   statsByFood.forEach((stats, sourceId) => {
-    const recommendations = Array.from(stats.targets.entries())
-      .map(([targetId, boughtTogether]) => {
-        const confidence = stats.sourceOrderCount
-          ? boughtTogether / stats.sourceOrderCount
-          : 0;
-
-        return {
-          food: new mongoose.Types.ObjectId(targetId),
-          score: Number((confidence * Math.log1p(boughtTogether)).toFixed(6)),
-          boughtTogether,
-          confidence: Number(confidence.toFixed(6)),
-        };
-      })
-      .sort((a, b) => b.score - a.score || b.boughtTogether - a.boughtTogether)
-      .slice(0, MAX_RECOMMENDATIONS_PER_FOOD);
+    const recommendations = buildRecommendationItems(
+      stats.sourceOrderCount,
+      stats.targets
+    );
 
     docs.push({
       food: new mongoose.Types.ObjectId(sourceId),
@@ -215,7 +223,63 @@ async function learnFromOrder(orderId) {
     return { updated: false, reason: "order_not_completed" };
   }
 
-  return trainFromAllOrders();
+  const details = await DetailOrder.find({ order: order._id })
+    .select("food")
+    .lean();
+
+  const foodIds = getUniqueFoodIds(details);
+  if (foodIds.length < 2) {
+    return { updated: false, reason: "not_enough_foods" };
+  }
+
+  const existingDocs = await Recommendation.find({
+    food: { $in: foodIds.map((id) => new mongoose.Types.ObjectId(id)) },
+  }).lean();
+
+  const existingDocsByFood = new Map(
+    existingDocs.map((doc) => [normalizeId(doc.food), doc])
+  );
+
+  const updatedAt = new Date();
+  const operations = foodIds.map((sourceId) => {
+    const existingDoc = existingDocsByFood.get(sourceId);
+    const sourceOrderCount = (existingDoc?.sourceOrderCount || 0) + 1;
+    const targetCounts = new Map();
+
+    existingDoc?.recommendations?.forEach((item) => {
+      const targetId = normalizeId(item.food);
+      if (targetId && targetId !== sourceId) {
+        targetCounts.set(targetId, item.boughtTogether || 0);
+      }
+    });
+
+    foodIds.forEach((targetId) => {
+      if (targetId === sourceId) return;
+      targetCounts.set(targetId, (targetCounts.get(targetId) || 0) + 1);
+    });
+
+    return {
+      updateOne: {
+        filter: { food: new mongoose.Types.ObjectId(sourceId) },
+        update: {
+          $set: {
+            recommendations: buildRecommendationItems(sourceOrderCount, targetCounts),
+            sourceOrderCount,
+            updated_at: updatedAt,
+          },
+        },
+        upsert: true,
+      },
+    };
+  });
+
+  await Recommendation.bulkWrite(operations);
+
+  return {
+    updated: true,
+    sourceOrder: normalizeId(order._id),
+    trainedFoods: foodIds.length,
+  };
 }
 
 async function getRecommendations(foodIds = [], limit = DEFAULT_LIMIT) {
