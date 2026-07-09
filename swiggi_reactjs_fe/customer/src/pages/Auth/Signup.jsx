@@ -149,11 +149,6 @@ const Signup = () => {
           <button className="btn btn-primary btn-lg btn-block" type="submit">
             Đăng ký
           </button>
-          <div className="py-2">
-            <button className="btn btn-facebook btn-lg btn-block">
-              <i className="feather-facebook"></i> Đăng ký với Facebook
-            </button>
-          </div>
         </form>
       </div>
       <div className="new-acc d-flex align-items-center justify-content-center">

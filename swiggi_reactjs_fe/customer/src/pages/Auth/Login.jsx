@@ -77,11 +77,6 @@ const Login = () => {
         <button className="btn btn-primary btn-lg btn-block" type="submit">
           Đăng nhập
         </button>
-        <div className="py-2">
-          <button className="btn btn-lg btn-facebook btn-block">
-            <i className="feather-facebook"></i> Đăng nhập với Facebook
-          </button>
-        </div>
       </form>
      
       <div className="d-flex align-items-center justify-content-center">
