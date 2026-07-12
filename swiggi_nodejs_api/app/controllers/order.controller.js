@@ -3,8 +3,10 @@ const DetailOrder = require("../models/detail_orders.model");
 const Cart = require("../models/cart.model");
 const Coupon = require("../models/coupon.model");
 const recommenderService = require("../services/recommender.service");
+const momoService = require("../services/momo.service");
 
 const VIETQR_EXPIRY_MS = 10 * 60 * 1000;
+const MOMO_EXPIRY_MS = 15 * 60 * 1000;
 
 async function releaseCouponReservation(order) {
   if (!order.coupon || !order.couponReserved) return;
@@ -34,7 +36,7 @@ async function releaseCouponReservation(order) {
 async function expireStaleVietQrOrders() {
   await Order.updateMany(
     {
-      payment: "Bank",
+      payment: { $in: ["Bank", "Momo"] },
       paymentStatus: "Pending",
       status: "Pending",
       paymentExpiresAt: { $lte: new Date() },
@@ -49,7 +51,7 @@ async function expireStaleVietQrOrders() {
   );
 
   const expiredCouponOrders = await Order.find({
-    payment: "Bank",
+    payment: { $in: ["Bank", "Momo"] },
     paymentStatus: "Expired",
     couponReserved: true,
   });
@@ -199,6 +201,7 @@ class OrderController {
   async create(req, res) {
     let reservedCouponId = null;
     let createdOrderId = null;
+    let createdPaymentMethod = null;
 
     try {
       const {
@@ -210,8 +213,9 @@ class OrderController {
         timeShip,
         payment = "Cod",
       } = req.body;
+      createdPaymentMethod = payment;
 
-      if (!["Cod", "Bank"].includes(payment)) {
+      if (!["Cod", "Bank", "Momo"].includes(payment)) {
         return res.status(400).json({ message: "Phương thức thanh toán không hợp lệ" });
       }
 
@@ -227,11 +231,25 @@ class OrderController {
         });
       }
 
-      if (payment === "Bank") {
+      if (payment === "Momo") {
+        try {
+          momoService.assertConfig();
+        } catch (error) {
+          if (error.missingKeys) {
+            return res.status(500).json({
+              message: "Chưa cấu hình đầy đủ thông tin MoMo sandbox",
+              missingKeys: error.missingKeys,
+            });
+          }
+          throw error;
+        }
+      }
+
+      if (payment === "Bank" || payment === "Momo") {
         await expireStaleVietQrOrders();
         const pendingPayment = await Order.exists({
           user: req.user.userId,
-          payment: "Bank",
+          payment: { $in: ["Bank", "Momo"] },
           paymentStatus: "Pending",
           status: "Pending",
         });
@@ -239,7 +257,7 @@ class OrderController {
         if (pendingPayment) {
           return res.status(400).json({
             message:
-              "Bạn đang có một đơn VietQR chờ thanh toán. Vui lòng hoàn tất hoặc chờ mã hết hạn.",
+              "Bạn đang có một đơn chờ thanh toán. Vui lòng hoàn tất hoặc chờ mã hết hạn.",
           });
         }
       }
@@ -315,10 +333,13 @@ class OrderController {
         distance,
         timeShip,
         payment,
-        paymentStatus: payment === "Bank" ? "Pending" : "NotRequired",
+        paymentStatus:
+          payment === "Bank" || payment === "Momo" ? "Pending" : "NotRequired",
         paymentExpiresAt:
           payment === "Bank"
             ? new Date(Date.now() + VIETQR_EXPIRY_MS)
+            : payment === "Momo"
+            ? new Date(Date.now() + MOMO_EXPIRY_MS)
             : null,
         couponReserved: Boolean(couponCheck),
       });
@@ -337,6 +358,13 @@ class OrderController {
 
       await DetailOrder.insertMany(detailOrders);
 
+      const paymentInfo =
+        payment === "Bank"
+          ? buildVietQrPayment(savedOrder, vietQrConfig)
+          : payment === "Momo"
+          ? await momoService.createPayment(savedOrder)
+          : null;
+
       await Cart.deleteMany({ user: req.user.userId });
 
       // Realtime: báo admin có đơn mới
@@ -347,17 +375,25 @@ class OrderController {
 
       learnRecommendationsSafely(savedOrder._id);
 
-      const paymentInfo =
-        payment === "Bank"
-          ? buildVietQrPayment(savedOrder, vietQrConfig)
-          : null;
-
       return res.status(201).json({
         message: "Đơn hàng đã được tạo thành công",
         order: savedOrder,
         paymentInfo,
       });
     } catch (error) {
+      if (createdOrderId && createdPaymentMethod === "Momo") {
+        try {
+          const createdOrder = await Order.findById(createdOrderId);
+          if (createdOrder) {
+            await releaseCouponReservation(createdOrder);
+          }
+          await DetailOrder.deleteMany({ order: createdOrderId });
+          await Order.deleteOne({ _id: createdOrderId });
+        } catch (cleanupError) {
+          console.error("Không thể hoàn tác đơn MoMo lỗi", cleanupError);
+        }
+      }
+
       if (reservedCouponId && !createdOrderId) {
         try {
           await Coupon.updateOne(
@@ -438,7 +474,10 @@ class OrderController {
       }
 
       order.status = "Cancelled";
-      if (order.payment === "Bank" && order.paymentStatus === "Pending") {
+      if (
+        (order.payment === "Bank" || order.payment === "Momo") &&
+        order.paymentStatus === "Pending"
+      ) {
         order.paymentStatus = "Cancelled";
       }
       const savedOrder = await order.save();
@@ -480,7 +519,7 @@ class OrderController {
       }
 
       if (
-        order.payment !== "Bank" ||
+        !["Bank", "Momo"].includes(order.payment) ||
         order.paymentStatus !== "Pending" ||
         order.status !== "Pending"
       ) {
@@ -536,7 +575,7 @@ class OrderController {
       }
 
       if (
-        order.payment === "Bank" &&
+        (order.payment === "Bank" || order.payment === "Momo") &&
         order.paymentStatus === "Pending" &&
         order.paymentExpiresAt &&
         order.paymentExpiresAt.getTime() <= Date.now()
@@ -581,6 +620,16 @@ class OrderController {
         });
       }
 
+      if (
+        status === "Processing" &&
+        order.payment === "Momo" &&
+        order.paymentStatus !== "Paid"
+      ) {
+        return res.status(400).json({
+          message: "Đơn MoMo cần thanh toán thành công trước khi xử lý",
+        });
+      }
+
       order.status = status;
       if (
         status === "Processing" &&
@@ -607,6 +656,64 @@ class OrderController {
       return res.status(500).json({
         message: "Lỗi khi cập nhật trạng thái đơn hàng",
         error,
+      });
+    }
+  }
+
+  // [POST] /orders/momo/ipn
+  async momoIpn(req, res) {
+    try {
+      const payload = req.body;
+
+      if (!momoService.verifyIpn(payload)) {
+        return res.status(400).json({
+          resultCode: 1,
+          message: "Invalid MoMo signature",
+        });
+      }
+
+      const order = await Order.findById(payload.orderId);
+
+      if (!order || order.payment !== "Momo") {
+        return res.status(404).json({
+          resultCode: 1,
+          message: "Order not found",
+        });
+      }
+
+      const expectedAmount = Math.round(order.amount + (order.ship || 0));
+      if (Number(payload.amount) !== expectedAmount) {
+        return res.status(400).json({
+          resultCode: 1,
+          message: "Invalid payment amount",
+        });
+      }
+
+      if (Number(payload.resultCode) === 0) {
+        order.paymentStatus = "Paid";
+      } else {
+        order.paymentStatus = "Cancelled";
+        order.status = "Cancelled";
+        await releaseCouponReservation(order);
+      }
+
+      order.paymentExpiresAt = null;
+      order.updated_at = new Date();
+      const savedOrder = await order.save();
+
+      const io = req.app.get("io");
+      if (io) {
+        io.emit("orderStatusUpdated", savedOrder);
+      }
+
+      return res.json({
+        resultCode: 0,
+        message: "Confirm Success",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        resultCode: 1,
+        message: "MoMo IPN processing failed",
       });
     }
   }
