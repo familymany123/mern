@@ -69,7 +69,7 @@ class CouponController {
       }
 
       if (isNaN(value) || value < 1 || value > 100) {
-        return res.status(400).json({ message: 'Gi� tr? gi?m ph?i t? 1 d?n 100.' });
+        return res.status(400).json({ message: 'Giá trị giảm giá phải từ 1 đến 100.' });
       }
 
       if (isNaN(quantity) || quantity < 0) {
@@ -109,7 +109,7 @@ class CouponController {
       }
 
       if (isNaN(value) || value < 1 || value > 100) {
-        return res.status(400).json({ message: 'Gi� tr? gi?m ph?i t? 1 d?n 100.' });
+        return res.status(400).json({ message: 'Giá trị giảm giá phải từ 1 đến 100.' });
       }
 
       if (isNaN(quantity) || quantity < 0) {

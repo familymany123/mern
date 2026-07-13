@@ -362,7 +362,8 @@ class OrderController {
         payment === "Bank"
           ? buildVietQrPayment(savedOrder, vietQrConfig)
           : payment === "Momo"
-          ? await momoService.createPayment(savedOrder)
+          ? ((createdPaymentMethod = "Momo"),
+            await momoService.createPayment(savedOrder))
           : null;
 
       await Cart.deleteMany({ user: req.user.userId });
@@ -406,8 +407,11 @@ class OrderController {
       }
 
       return res.status(500).json({
-        message: "Lỗi khi tạo đơn hàng",
-        error,
+        message:
+          error?.response?.message ||
+          error?.message ||
+          "Không thể tạo đơn hàng",
+        error: error?.response || error?.message || error,
       });
     }
   }

@@ -85,10 +85,10 @@ const Home = () => {
     Processing: "#3399FF",
     Completed: "#33FF57",
     Cancelled: "#FF5733",
-    "Ch? x? l�": "#FFC300",
-    "�ang x? l�": "#3399FF",
-    "Ho�n th�nh": "#33FF57",
-    "�� h?y": "#FF5733",
+    "Chờ xử lý": "#FFC300",
+    "Đang xử lý": "#3399FF",
+    "Hoàn thành": "#33FF57",
+    "Đã hủy": "#FF5733",
   };
 
   const chartData = {
@@ -194,9 +194,9 @@ const Home = () => {
                 value={orderStatusRange}
                 onChange={(event) => setOrderStatusRange(event.target.value)}
               >
-                <option value="today">Hom nay</option>
-                <option value="month">Thang nay</option>
-                <option value="all">Tat ca</option>
+                <option value="today">Hôm nay</option>
+                <option value="month">Tháng này</option>
+                <option value="all">Tất cả</option>
               </select>
             </div>
             <div className="card-body">
@@ -213,7 +213,7 @@ const Home = () => {
                 {orderStatusData.length > 0 ? (
                   <Pie data={chartData} options={{ responsive: true }} />
                 ) : (
-                  <p>Khong co du lieu don hang</p>
+                  <p>Không có dữ liệu đơn hàng</p>
                 )}
               </div>
             </div>

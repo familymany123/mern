@@ -254,6 +254,12 @@ function Checkout() {
       }
     } catch (error) {
       console.log(error);
+      const message =
+        error?.message ||
+        error?.error?.message ||
+        error?.error?.response?.message ||
+        "Không thể tạo thanh toán. Vui lòng thử lại.";
+      alert(message);
     } finally {
       setLoading(false);
     }
