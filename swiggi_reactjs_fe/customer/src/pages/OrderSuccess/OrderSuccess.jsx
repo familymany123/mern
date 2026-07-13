@@ -37,12 +37,9 @@ function OrderSuccess() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const searchParams = new URLSearchParams(location.search);
-  const momoOrderId = searchParams.get("orderId");
-  const [result, setResult] = useState(() => location.state || readStoredResult());
+  const [result] = useState(() => location.state || readStoredResult());
   const order = result?.order;
   const paymentInfo = result?.paymentInfo;
-  const isVietQrPayment = paymentInfo?.provider === "VietQR";
   const [remainingSeconds, setRemainingSeconds] = useState(() =>
     secondsUntil(paymentInfo?.expiresAt)
   );
@@ -57,22 +54,7 @@ function OrderSuccess() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!momoOrderId || result?.order) return undefined;
-
-    const fetchMomoOrder = async () => {
-      try {
-        const response = await baseApi.get(`/orders/${momoOrderId}`);
-        setResult({ order: response.data.order });
-      } catch (error) {
-        console.error("Không thể lấy đơn hàng MoMo", error);
-      }
-    };
-
-    fetchMomoOrder();
-  }, [momoOrderId, result?.order]);
-
-  useEffect(() => {
-    if (!order?._id || !isVietQrPayment) return undefined;
+    if (!order?._id || !paymentInfo) return undefined;
 
     const checkOrder = async () => {
       try {
@@ -102,41 +84,7 @@ function OrderSuccess() {
     checkOrder();
     const pollingId = window.setInterval(checkOrder, 3000);
     return () => window.clearInterval(pollingId);
-  }, [navigate, order?._id, isVietQrPayment]);
-
-  useEffect(() => {
-    if (
-      !order?._id ||
-      order.payment !== "Momo" ||
-      order.paymentStatus !== "Pending"
-    ) {
-      return undefined;
-    }
-
-    const checkMomoOrder = async () => {
-      try {
-        const response = await baseApi.get(`/orders/${order._id}`);
-        const updatedOrder = response.data.order;
-        setResult((current) => ({
-          ...current,
-          order: updatedOrder,
-        }));
-
-        if (
-          updatedOrder.paymentStatus === "Paid" ||
-          updatedOrder.status === "Cancelled"
-        ) {
-          sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
-        }
-      } catch (error) {
-        console.error("Không thể kiểm tra trạng thái MoMo", error);
-      }
-    };
-
-    checkMomoOrder();
-    const pollingId = window.setInterval(checkMomoOrder, 3000);
-    return () => window.clearInterval(pollingId);
-  }, [order?._id, order?.payment, order?.paymentStatus]);
+  }, [navigate, order?._id, paymentInfo]);
 
   useEffect(() => {
     if (!order?._id || !paymentInfo?.expiresAt || isExpired) return undefined;
@@ -163,32 +111,25 @@ function OrderSuccess() {
     return () => window.clearInterval(timerId);
   }, [isExpired, order?._id, paymentInfo?.expiresAt]);
 
-  const isMomoOrder = order?.payment === "Momo";
-  const pageTitle = isExpired
-    ? "Mã VietQR đã hết hạn"
-    : isVietQrPayment
-    ? "Quét mã VietQR để chuyển khoản"
-    : isMomoOrder && order?.paymentStatus === "Paid"
-    ? "Thanh toán MoMo thành công"
-    : isMomoOrder && order?.status === "Cancelled"
-    ? "Thanh toán MoMo không thành công"
-    : isMomoOrder
-    ? "Đang kiểm tra thanh toán MoMo"
-    : "Đơn hàng đã được tiếp nhận";
-
   return (
     <div className="py-5 osahan-coming-soon">
       <div className="container">
         <div className="mx-auto" style={{ maxWidth: "620px" }}>
           <div className="text-center pb-3">
-            <h2 className="font-weight-bold">{pageTitle}</h2>
+            <h2 className="font-weight-bold">
+              {isExpired
+                ? "Mã VietQR đã hết hạn"
+                : paymentInfo
+                ? "Quét mã VietQR để chuyển khoản"
+                : "Đơn hàng đã được tiếp nhận"}
+            </h2>
             <p className="text-muted mb-0">
               Mã đơn hàng: <strong>{order?.code || "Đang cập nhật"}</strong>
             </p>
           </div>
 
           <div className="bg-white rounded p-4 shadow-sm">
-            {isVietQrPayment && !isExpired ? (
+            {paymentInfo && !isExpired ? (
               <>
                 <div className="text-center">
                   <p className="mb-2">Thời gian thanh toán còn lại</p>
@@ -231,29 +172,13 @@ function OrderSuccess() {
                   </p>
                 </div>
               </>
-            ) : isVietQrPayment ? (
+            ) : paymentInfo ? (
               <div className="text-center py-4">
                 <h5 className="font-weight-bold text-danger">
                   Đã quá 10 phút thanh toán
                 </h5>
                 <p className="text-muted mb-0">
                   Mã QR không còn hiệu lực và đơn hàng đã được hủy.
-                </p>
-              </div>
-            ) : isMomoOrder ? (
-              <div className="text-center">
-                <h1 className="display-1 mb-4">
-                  {order?.paymentStatus === "Paid" ? "✓" : "..."}
-                </h1>
-                <h6 className="font-weight-bold mb-2">
-                  {order?.paymentStatus === "Paid"
-                    ? "MoMo đã xác nhận giao dịch thành công"
-                    : order?.status === "Cancelled"
-                    ? "Giao dịch MoMo chưa hoàn tất"
-                    : "Hệ thống đang chờ MoMo xác nhận giao dịch"}
-                </h6>
-                <p className="small text-muted">
-                  Sau khi thanh toán thành công, bạn có thể theo dõi đơn hàng trong danh sách đơn hàng.
                 </p>
               </div>
             ) : (

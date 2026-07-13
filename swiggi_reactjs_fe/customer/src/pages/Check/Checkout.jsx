@@ -232,20 +232,9 @@ function Checkout() {
         sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
         navigate("/orderSuccess", { state: response });
       } else {
-        const payment =
-          selectedPayment === "MOMO"
-            ? "Momo"
-            : selectedPayment === "VIETQR"
-            ? "Bank"
-            : "Cod";
         const response = await dispatch(
-          createOrder({ ...orderData, payment })
+          createOrder({ ...orderData, payment: "Bank" })
         ).unwrap();
-        if (response.paymentInfo?.payUrl) {
-          sessionStorage.removeItem(LAST_VIETQR_ORDER_KEY);
-          window.location.assign(response.paymentInfo.payUrl);
-          return;
-        }
         sessionStorage.setItem(
           LAST_VIETQR_ORDER_KEY,
           JSON.stringify(response)
@@ -254,12 +243,6 @@ function Checkout() {
       }
     } catch (error) {
       console.log(error);
-      const message =
-        error?.message ||
-        error?.error?.message ||
-        error?.error?.response?.message ||
-        "Không thể tạo thanh toán. Vui lòng thử lại.";
-      alert(message);
     } finally {
       setLoading(false);
     }
@@ -556,7 +539,7 @@ function Checkout() {
                           }}
                           size={20}
                         />
-                        Thanh toán trực tuyến
+                        Chuyển khoản ngân hàng
                         <FaAnglesDown
                           style={{
                             marginLeft: "auto",
@@ -572,9 +555,9 @@ function Checkout() {
                     data-parent="#accordionExample"
                   >
                     <div className="border-top p-3 osahan-card-body">
-                      <h6 className="mb-3 font-weight-bold">VietQR / MoMo</h6>
+                      <h6 className="mb-3 font-weight-bold">VietQR</h6>
                       <p className="m-0">
-                        Hệ thống sẽ tạo thông tin thanh toán chính xác theo tổng tiền của đơn hàng.
+                        Hệ thống sẽ thực hiện thanh toán chính xác số tiền của đơn hàng.
                       </p>
                     </div>
                     <div className="border-top p-3 osahan-card-body">
@@ -585,7 +568,6 @@ function Checkout() {
                       >
                         <option value="">Chọn phương thức</option>
                         <option value="VIETQR">Chuyển khoản bằng VietQR</option>
-                        <option value="MOMO">Thanh toán bằng ví MoMo</option>
                       </select>
                     </div>
                   </div>
