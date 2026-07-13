@@ -59,6 +59,23 @@ async function expireStaleVietQrOrders() {
   }
 }
 
+async function cancelInactiveVietQrPayments(userId) {
+  await Order.updateMany(
+    {
+      user: userId,
+      payment: "Bank",
+      paymentStatus: "Pending",
+      status: { $ne: "Pending" },
+    },
+    {
+      $set: {
+        paymentStatus: "Cancelled",
+        updated_at: new Date(),
+      },
+    }
+  );
+}
+
 function getVietQrConfig() {
   return {
     bankId: process.env.BANK_ID?.trim(),
@@ -229,11 +246,14 @@ class OrderController {
 
       if (payment === "Bank") {
         await expireStaleVietQrOrders();
+        await cancelInactiveVietQrPayments(req.user.userId);
+
         const pendingPayment = await Order.exists({
           user: req.user.userId,
           payment: "Bank",
           paymentStatus: "Pending",
           status: "Pending",
+          paymentExpiresAt: { $gt: new Date() },
         });
 
         if (pendingPayment) {
