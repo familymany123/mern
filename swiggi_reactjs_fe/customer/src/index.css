@@ -1814,3 +1814,97 @@ footer .text-muted {
 .selected-food {
   border: 2px solid #de314e;
 }
+
+@media (max-width: 576px) {
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .fixed-bottom-bar {
+    overflow-x: hidden;
+    padding-bottom: 72px;
+  }
+
+  .container,
+  .container-fluid,
+  .container-sm,
+  .container-md {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .row {
+    margin-left: -8px;
+    margin-right: -8px;
+  }
+
+  [class*="col-"] {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .slick-slider,
+  .slick-list {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .slick-arrow {
+    display: none !important;
+  }
+
+  .osahan-menu-fotter {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .osahan-menu-fotter .col a {
+    padding: 8px 4px;
+  }
+
+  .osahan-menu-fotter .col a p {
+    font-size: 12px;
+    line-height: 1.15;
+    margin-bottom: 0;
+  }
+
+  .osahan-menu-fotter .col.bg-white.rounded-circle.mt-n4.px-3.py-2 {
+    width: 78px;
+    min-width: 78px;
+    max-width: 78px;
+    height: 78px;
+    min-height: 78px;
+    max-height: 78px;
+    padding: 6px !important;
+    margin-top: -12px !important;
+  }
+
+  .osahan-menu-fotter .col.bg-white.rounded-circle.mt-n4.px-3.py-2 a {
+    width: 58px;
+    height: 58px;
+    padding: 13px;
+    font-size: 22px !important;
+  }
+
+  .sticky_sidebar {
+    position: static !important;
+    top: auto !important;
+  }
+
+  .osahan-cart-item .form-control {
+    font-size: 14px;
+  }
+
+  .osahan-cart-item .btn-lg {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .osahan-cart-item h5,
+  .osahan-cart-item h6 {
+    line-height: 1.35;
+  }
+}
