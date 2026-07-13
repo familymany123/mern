@@ -46,7 +46,7 @@ const AdminLayout = () => {
             </div>
           </div>
         ),
-        { duration: 8000 }
+        { duration: 20000 }
       );
     });
 
