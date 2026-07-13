@@ -2,6 +2,33 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "../api/config";
 
+const CHAT_TIMEOUT_MS = 45000;
+const CHAT_RETRY_DELAYS = [0, 1500, 3000];
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const sendChatMessageWithRetry = async (message) => {
+  let lastError;
+
+  for (let attempt = 0; attempt < CHAT_RETRY_DELAYS.length; attempt += 1) {
+    if (CHAT_RETRY_DELAYS[attempt] > 0) {
+      await sleep(CHAT_RETRY_DELAYS[attempt]);
+    }
+
+    try {
+      return await axios.post(
+        `${API_BASE_URL}/chat-ai`,
+        { message },
+        { timeout: CHAT_TIMEOUT_MS }
+      );
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError;
+};
+
 function AIChatBox() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -23,7 +50,7 @@ function AIChatBox() {
   const handleSend = async (quickText) => {
     const messageToSend = quickText || input;
 
-    if (!messageToSend.trim()) return;
+    if (!messageToSend.trim() || isLoading) return;
 
     const userMessage = {
       role: "user",
@@ -35,9 +62,7 @@ function AIChatBox() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/chat-ai`, {
-        message: messageToSend,
-      });
+      const response = await sendChatMessageWithRetry(messageToSend);
 
       const aiMessage = {
         role: "ai",
@@ -48,7 +73,9 @@ function AIChatBox() {
     } catch (error) {
       const errorMessage = {
         role: "ai",
-        text: "Không kết nối được server",
+        text:
+          error.response?.data?.reply ||
+          "AI đang kết nối chậm. Bạn vui lòng thử lại sau vài giây nhé.",
       };
 
       setMessages((prev) => [...prev, errorMessage]);
