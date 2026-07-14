@@ -147,7 +147,7 @@ const Order = () => {
               </div>
               <div className="card-body">
                 <div className="table-responsive">
-                  <table className="table table-bordered">
+                  <table className="table table-bordered text-nowrap" style={{ minWidth: "1100px" }}>
                     <thead>
                       <tr>
                         <th>Order ID</th>
@@ -224,7 +224,7 @@ const Order = () => {
                           </td>
                           <td>
                             <button
-                              className="btn btn-primary"
+                              className="btn btn-primary btn-sm"
                               onClick={() => handleStatusUpdate(order?._id)}
                             >
                               Sửa
@@ -232,7 +232,7 @@ const Order = () => {
                             {/* chi tiết đơn hàng */}
                             <Link
                               to={`/order/${order?._id}`}
-                              className="btn btn-info ml-2"
+                              className="btn btn-info btn-sm ml-2"
                             >
                               Chi tiết
                             </Link>
